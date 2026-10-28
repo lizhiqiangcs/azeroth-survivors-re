@@ -8,7 +8,8 @@ use bevy::ui::RelativeCursorPosition;
 
 use super::data::{self, Kind};
 use super::fill::FillMaterial;
-use super::hud::{self, Choice, HudFont, Offer, SpellIcon};
+use super::hud::{self, Choice, HudFont, Offer, OfferMode, SpellIcon};
+use super::synergy::{Req, Tier};
 use super::{Phase, Rng, Run};
 
 /// WoW's item-quality colours (`ITEM_QUALITY_COLORS`).
@@ -132,7 +133,20 @@ pub(super) fn rarity(choice: Choice, run: &Run) -> Rarity {
             2 => Rarity::Common,
             _ => Rarity::Uncommon,
         },
-        Choice::Heal => Rarity::Common,
+        Choice::Heal | Choice::Forget(_) => Rarity::Common,
+        Choice::Rune(..) => Rarity::Epic,
+        Choice::Learn(_) | Choice::Combo(_) => Rarity::Legendary,
+        Choice::Talent(t) => match t.req {
+            Req::Duo(..) => Rarity::Legendary,
+            Req::Tree(..) => Rarity::Epic,
+            Req::None if !t.cursed => Rarity::Rare,
+            _ => Rarity::Epic,
+        },
+        Choice::Relic(r) => match r.tier {
+            Tier::Rare => Rarity::Rare,
+            Tier::Epic => Rarity::Epic,
+            Tier::Legendary => Rarity::Legendary,
+        },
     }
 }
 
@@ -178,6 +192,12 @@ pub(super) fn deal_cards(
     let Ok(row) = rows.single() else { return };
     commands.entity(row).despawn_related::<Children>();
     let f = &font.0;
+    // A forget can lay out up to seven spells: narrower cards then.
+    let (card_w, card_h) = if offer.len() > 4 {
+        (172.0, 290.0)
+    } else {
+        (CARD_W, CARD_H)
+    };
     commands.entity(row).with_children(|row| {
         for (i, &choice) in offer.choices().iter().enumerate() {
             let card = hud::describe_card(choice, &run, spells.as_deref());
@@ -196,8 +216,8 @@ pub(super) fn deal_cards(
                 Interaction::default(),
                 RelativeCursorPosition::default(),
                 Node {
-                    width: Val::Px(CARD_W),
-                    height: Val::Px(CARD_H),
+                    width: Val::Px(card_w),
+                    height: Val::Px(card_h),
                     flex_direction: FlexDirection::Column,
                     align_items: AlignItems::Center,
                     padding: UiRect::new(
@@ -228,7 +248,7 @@ pub(super) fn deal_cards(
             ))
             .with_children(|c| {
                 // A dark face lit from the top in the rarity's colour, inside the border.
-                let inner_h = CARD_H - 4.0;
+                let inner_h = card_h - 4.0;
                 c.spawn((
                     Node {
                         position_type: PositionType::Absolute,
@@ -250,7 +270,7 @@ pub(super) fn deal_cards(
                             .with_glow(
                                 rc.with_alpha(0.45),
                                 Vec2::new(0.5, 60.0 / inner_h),
-                                Vec2::new((CARD_W - 4.0) / 2.0 / inner_h, 90.0 / inner_h),
+                                Vec2::new((card_w - 4.0) / 2.0 / inner_h, 90.0 / inner_h),
                             ),
                         ),
                     ),
@@ -505,30 +525,125 @@ pub(super) fn animate_cards(
     }
 }
 
-/// A click on a card, or 1/2/3: start its burst; the choice applies when it finishes.
+/// A click on a card, or 1/2/3 (up to 7 when forgetting): start its burst; the choice applies
+/// when it finishes. R deals three new cards, B banishes the next card picked, X chooses a spell
+/// to forget.
+#[allow(clippy::too_many_arguments)]
 pub(super) fn choose_card(
     phase: Res<State<Phase>>,
     keys: Res<ButtonInput<KeyCode>>,
     cards: Query<(&Card, &Interaction), Changed<Interaction>>,
-    offer: Res<Offer>,
+    mut offer: ResMut<Offer>,
+    mut run: ResMut<Run>,
+    mut rng: ResMut<Rng>,
     mut pending: ResMut<PendingPick>,
 ) {
     if *phase.get() != Phase::LevelUp || pending.0.is_some() {
+        return;
+    }
+    if keys.just_pressed(KeyCode::KeyR) {
+        hud::reroll(&mut run, &mut offer, &mut rng);
+        return;
+    }
+    if keys.just_pressed(KeyCode::KeyB) {
+        hud::toggle_banish(&run, &mut offer);
+        return;
+    }
+    if keys.just_pressed(KeyCode::KeyX)
+        || (keys.just_pressed(KeyCode::Escape) && offer.mode == OfferMode::Forget)
+    {
+        hud::toggle_forget(&run, &mut offer);
         return;
     }
     let mut pick = cards
         .iter()
         .find(|(c, i)| **i == Interaction::Pressed && c.t >= DEAL_SECS)
         .map(|(c, _)| c.index);
-    for (i, key) in [KeyCode::Digit1, KeyCode::Digit2, KeyCode::Digit3]
-        .into_iter()
-        .enumerate()
+    for (i, key) in [
+        KeyCode::Digit1,
+        KeyCode::Digit2,
+        KeyCode::Digit3,
+        KeyCode::Digit4,
+        KeyCode::Digit5,
+        KeyCode::Digit6,
+        KeyCode::Digit7,
+    ]
+    .into_iter()
+    .enumerate()
     {
         if keys.just_pressed(key) {
             pick = Some(i);
         }
     }
-    if let Some(i) = pick.filter(|&i| i < offer.len()) {
+    let Some(i) = pick.filter(|&i| i < offer.len()) else {
+        return;
+    };
+    if offer.banishing {
+        hud::banish(i, &mut run, &mut offer, &mut rng);
+    } else {
         pending.0 = Some((i, 0.0));
+    }
+}
+
+/// The picker's title and its line of tools, kept to the offer and what is left of each tool.
+pub(super) fn offer_text(
+    phase: Res<State<Phase>>,
+    run: Res<Run>,
+    offer: Res<Offer>,
+    mut texts: ParamSet<(
+        Query<&mut Text, With<hud::LevelUpTitle>>,
+        Query<&mut Text, With<hud::LevelUpSub>>,
+        Query<&mut Text, With<hud::OfferHint>>,
+    )>,
+) {
+    if *phase.get() != Phase::LevelUp {
+        return;
+    }
+    let (title, sub) = match offer.mode {
+        OfferMode::Level if offer.banishing => (
+            "BANISH",
+            "Pick a card to strike it from this run.  B: cancel".to_string(),
+        ),
+        OfferMode::Level if hud::spec_offer(&run, &offer) => (
+            "CHOOSE YOUR SPECIALIZATION",
+            "Pick a talent tree. It shapes your starting spell and the spells you learn later."
+                .into(),
+        ),
+        OfferMode::Level => (
+            "LEVEL UP",
+            format!("Level {}: choose your power", run.level),
+        ),
+        OfferMode::Treasure(true) => ("BOSS LOOT", "Need before greed: take one item".into()),
+        OfferMode::Treasure(false) => ("LOOT", "Need before greed: take one item".into()),
+        OfferMode::Forget => (
+            "UNLEARN",
+            "Unlearn a spell to free its slot and win back its picks.  X: back".into(),
+        ),
+    };
+    let hint = match offer.mode {
+        OfferMode::Forget => format!("Press 1-{} or click a spell", offer.len()),
+        OfferMode::Treasure(_) => format!(
+            "1, 2, 3 or click     R  Reroll ({})     B  Banish ({})",
+            run.rerolls, run.banishes
+        ),
+        OfferMode::Level => format!(
+            "1, 2, 3 or click     R  Reroll ({})     B  Banish ({})     X  Unlearn ({})",
+            run.rerolls, run.banishes, run.forgets
+        ),
+    };
+    if let Ok(mut t) = texts.p0().single_mut() {
+        if **t != title {
+            **t = title.to_string();
+        }
+    }
+    if let Ok(mut t) = texts.p1().single_mut() {
+        if **t != sub {
+            **t = sub;
+        }
+    }
+    if let Ok(mut t) = texts.p2().single_mut() {
+        if **t != hint {
+            **t = hint;
+        }
     }
 }

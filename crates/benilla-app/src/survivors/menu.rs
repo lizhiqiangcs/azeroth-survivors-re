@@ -14,8 +14,8 @@ use crate::char_select::race_name;
 use crate::glue::art::{class_tc, race_tc, tc_rect, GlueArt, DIM, GOLD, NAME_EDGE};
 use crate::glue::backdrop::{backdrop_border, tiled_bg_node};
 use crate::glue::widgets::{
-    abs, glue_button, icon_button, outlined_text, GlueBtnKind, GlueDisabled, GlueText, Hilight,
-    HoverLabel, LockHighlight,
+    abs, glue_button, icon_button, outlined_text, outlined_text_centered, GlueBtnKind,
+    GlueDisabled, GlueText, Hilight, HoverLabel, LockHighlight,
 };
 use crate::glue::GlueClicks;
 
@@ -57,6 +57,10 @@ pub(super) struct RaceFace(u8);
 
 #[derive(Component)]
 pub(super) struct PickName;
+
+/// The line under the name: the race's trait and the class's resource.
+#[derive(Component)]
+pub(super) struct PickTraits;
 
 /// The saved pick, `benilla-config/survivors-pick.txt` (`localStorage` on the page):
 /// `class race sex map`, restored at the menu so a reload keeps the last hero and zone.
@@ -164,7 +168,9 @@ pub(super) fn build_menu(
             position_type: PositionType::Absolute,
             bottom: Val::Px(100.0),
             width: Val::Percent(100.0),
-            justify_content: JustifyContent::Center,
+            flex_direction: FlexDirection::Column,
+            align_items: AlignItems::Center,
+            row_gap: Val::Px(4.0),
             ..default()
         })
         .with_children(|c| {
@@ -178,6 +184,24 @@ pub(super) fn build_menu(
                     size: 22.0,
                     color: GOLD,
                     wrap: false,
+                },
+                f,
+                1.0,
+            );
+            // What the race and the class bring to the run (survivors::synergy).
+            outlined_text_centered(
+                c,
+                Node {
+                    max_width: Val::Px(720.0),
+                    ..default()
+                },
+                (),
+                PickTraits,
+                GlueText {
+                    text: "",
+                    size: 13.0,
+                    color: Color::srgb(0.95, 0.92, 0.85),
+                    wrap: true,
                 },
                 f,
                 1.0,
@@ -623,6 +647,7 @@ pub(super) fn refresh_menu_ui(
     mut labels: Query<&mut Visibility, (With<HoverLabel>, Without<MenuAction>)>,
     mut faces: Query<(&RaceFace, &mut ImageNode)>,
     mut name: Query<(&mut Text, &mut TextColor), With<PickName>>,
+    mut traits: Query<&mut Text, (With<PickTraits>, Without<PickName>)>,
     mut cache: Local<(Option<u32>, bool, Vec<Vec<(u32, u8, u8)>>)>,
 ) {
     let have = creatures.is_some();
@@ -716,6 +741,22 @@ pub(super) fn refresh_menu_ui(
         };
         if t.0 != want {
             t.0 = want;
+        }
+        if let Ok(mut line) = traits.single_mut() {
+            let want = match (class, cur) {
+                (Some(c), Some((r, _))) => {
+                    let (_, race_name, race_desc) = super::synergy::race_trait(r);
+                    let (_, class_name, class_desc) = super::synergy::class_trait(c.id);
+                    format!(
+                        "{race_name}: {race_desc}
+{class_name}: {class_desc}"
+                    )
+                }
+                _ => String::new(),
+            };
+            if line.0 != want {
+                line.0 = want;
+            }
         }
         // In the class's own colour, as the game's raid frames and chat show it.
         let want = class.map_or(GOLD, |c| rgb(c.color));

@@ -33,6 +33,7 @@ else
     Linux-aarch64) plat=arm64-linux ;;
     Darwin-arm64)  plat=arm64-macos ;;
     Darwin-x86_64) plat=x86_64-macos ;;
+    MINGW64*-x86_64|MSYS*-x86_64) plat=x86_64-windows ;;
     *) echo "unsupported host $(uname -s)-$(uname -m); set WASI_SDK to an unpacked SDK instead" >&2; exit 1 ;;
   esac
   url="https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-${WASI_SDK_VERSION}/wasi-sdk-${WASI_SDK_VERSION}.0-${plat}.tar.gz"
@@ -51,6 +52,7 @@ else
     Linux-aarch64) bplat=aarch64-linux ;;
     Darwin-arm64)  bplat=arm64-macos ;;
     Darwin-x86_64) bplat=x86_64-macos ;;
+    MINGW64*-x86_64|MSYS*-x86_64) bplat=x86_64-windows ;;
     *) bplat="" ;;
   esac
   if [ -n "${bplat}" ]; then

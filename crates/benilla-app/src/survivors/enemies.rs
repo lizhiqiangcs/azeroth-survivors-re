@@ -35,12 +35,84 @@ pub(super) struct Enemy {
     pub weaken_t: f32,
     pub dots: Vec<Dot>,
     pub dead: bool,
+    /// A champion of the horde: tougher, and it guards treasure.
+    pub elite: bool,
+    /// What the hero's schools have left on it.
+    pub st: Status,
 }
 
+#[derive(Clone)]
 pub(super) struct Dot {
     pub dps: f32,
     pub left: f32,
     pub tick: f32,
+    /// Its schools, as a mask.
+    pub school: u8,
+    /// Its ticks heal the hero (Rune of Haunting).
+    pub haunt: bool,
+}
+
+/// The school statuses on one enemy ([`super::synergy`]).
+#[derive(Default, Clone)]
+pub(super) struct Status {
+    /// Frost: chill stacks, their time left, and a freeze.
+    pub chill: u8,
+    pub chill_t: f32,
+    pub frozen_t: f32,
+    /// Fire: the burn's damage per second, time left, and the next tick.
+    pub burn: f32,
+    pub burn_t: f32,
+    pub burn_tick: f32,
+    /// Nature: static charges and their time left.
+    pub stat: u8,
+    pub stat_t: f32,
+    /// Physical: sunder stacks and their time left.
+    pub sunder: u8,
+    pub sunder_t: f32,
+    /// Holy: judged for this long.
+    pub judged_t: f32,
+    /// Under Hunter's Mark.
+    pub hunted: bool,
+    /// Its damage over time spreads when it dies (Rune of Contagion).
+    pub contagion: bool,
+}
+
+impl Status {
+    /// Its damage-over-time count, as Shadow Weaving sees it.
+    pub fn afflictions(&self, dots: usize, shadowflame: bool, twilight: bool) -> usize {
+        let burn = if self.burn_t > 0.0 {
+            if shadowflame {
+                2
+            } else {
+                1
+            }
+        } else {
+            0
+        };
+        let judged = usize::from(twilight && self.judged_t > 0.0);
+        dots + burn + judged
+    }
+
+    pub fn tick(&mut self, dt: f32) {
+        for t in [
+            &mut self.chill_t,
+            &mut self.frozen_t,
+            &mut self.stat_t,
+            &mut self.sunder_t,
+            &mut self.judged_t,
+        ] {
+            *t = (*t - dt).max(0.0);
+        }
+        if self.chill_t <= 0.0 {
+            self.chill = 0;
+        }
+        if self.stat_t <= 0.0 {
+            self.stat = 0;
+        }
+        if self.sunder_t <= 0.0 {
+            self.sunder = 0;
+        }
+    }
 }
 
 /// A corpse playing its death before it fades.
@@ -50,7 +122,11 @@ pub(super) struct Dying(f32);
 #[derive(Resource, Default)]
 pub(super) struct Spawner {
     timer: f32,
+    elites: u32,
 }
+
+/// An elite every this many seconds, from the first.
+const ELITE_EVERY_SECS: f32 = 55.0;
 
 /// An enemy died here, worth this much.
 #[derive(Message, Clone, Copy)]
@@ -58,12 +134,15 @@ pub(super) struct Loot {
     pub pos: Vec3,
     pub xp: u32,
     pub boss: bool,
+    pub elite: bool,
 }
 
 #[derive(Clone, Copy)]
 pub(super) enum GemKind {
     Xp(u32),
     Heal(f32),
+    /// Treasure: `true` for a boss's.
+    Chest(bool),
 }
 
 #[derive(Component)]
@@ -79,6 +158,8 @@ fn look_for(kind: GemKind) -> (u32, f32) {
     match kind {
         // `TurkeyLeg.mdx`.
         GemKind::Heal(_) => (114, 2.5),
+        // A great purple wisp: the treasure.
+        GemKind::Chest(_) => (1307, 3.5),
         // `BFD_WispSmallPurple.mdx`.
         GemKind::Xp(xp) if xp >= 20 => (1307, 1.0),
         // `BFD_WispSmallGreen.mdx`.
@@ -100,16 +181,18 @@ fn spawn_enemy(
     pos: Vec3,
     hero: Vec3,
     boss: bool,
+    elite: bool,
 ) {
-    let scale = data::hp_scale(run.elapsed);
+    let scale = data::hp_scale(run.elapsed) * run.enemy_hp_mult() * if elite { 7.0 } else { 1.0 };
+    let size = if elite { 1.45 } else { 1.0 };
     let serial = run.guid();
     let e = units::spawn_unit(
         commands,
         &UnitSpec {
             serial,
             display: def.display,
-            scale: def.scale,
-            level: def.level,
+            scale: def.scale * size,
+            level: def.level + if elite { 3 } else { 0 },
             faction: units::FACTION_MONSTER,
             bytes0: 1 << 8,
             weapons: &[],
@@ -124,10 +207,13 @@ fn spawn_enemy(
             def,
             hp,
             max_hp: hp,
-            speed: def.speed,
-            damage: def.damage * data::damage_scale(run.elapsed),
-            radius: radius_for(def),
-            xp: def.xp,
+            speed: def.speed * if elite { 1.1 } else { 1.0 },
+            damage: def.damage
+                * data::damage_scale(run.elapsed)
+                * run.enemy_dmg_mult()
+                * if elite { 1.5 } else { 1.0 },
+            radius: radius_for(def) * size,
+            xp: def.xp * if elite { 8 } else { 1 },
             boss,
             attack_cd: 0.5,
             slow: 1.0,
@@ -139,6 +225,8 @@ fn spawn_enemy(
             weaken_t: 0.0,
             dots: Vec::new(),
             dead: false,
+            elite,
+            st: Status::default(),
         },
         Marks::debuffs(),
     ));
@@ -180,7 +268,7 @@ pub(super) fn spawn_enemies(
             hpos + Vec3::new(a.cos(), 0.0, a.sin()) * 30.0,
             hpos.y,
         );
-        spawn_enemy(&mut commands, &mut run, def, pos, hpos, true);
+        spawn_enemy(&mut commands, &mut run, def, pos, hpos, true, false);
         run.bosses += 1;
         run.banner = Some((format!("{} approaches!", def.name), 4.0));
     }
@@ -191,16 +279,37 @@ pub(super) fn spawn_enemies(
         run.rings = due_rings;
         let def = &roster.enemies[pool[0]];
         let n = 28 + (data::progress(elapsed) * 60.0) as usize;
+        let gap = rng.range(0.0, std::f32::consts::TAU);
         for i in 0..n {
             let a = i as f32 / n as f32 * std::f32::consts::TAU;
+            if data::in_ring_gap(a, gap) {
+                continue;
+            }
             let pos = ground(
                 &world,
                 hpos + Vec3::new(a.cos(), 0.0, a.sin()) * 26.0,
                 hpos.y,
             );
-            spawn_enemy(&mut commands, &mut run, def, pos, hpos, false);
+            spawn_enemy(&mut commands, &mut run, def, pos, hpos, false, false);
         }
-        run.banner = Some(("They're surrounding you!".into(), 3.0));
+        run.banner = Some(("They're surrounding you! Find the gap!".into(), 3.0));
+    }
+
+    // An elite on its own clock, from the strongest of the moment, guarding treasure.
+    let due_elites = (elapsed / ELITE_EVERY_SECS) as u32;
+    if spawner.elites < due_elites {
+        spawner.elites = due_elites;
+        let def = &roster.enemies[pool[2].min(roster.enemies.len() - 1)];
+        let a = rng.range(0.0, std::f32::consts::TAU);
+        let pos = ground(
+            &world,
+            hpos + Vec3::new(a.cos(), 0.0, a.sin()) * 28.0,
+            hpos.y,
+        );
+        spawn_enemy(&mut commands, &mut run, def, pos, hpos, false, true);
+        if run.banner.is_none() {
+            run.banner = Some((format!("An elite {} guards treasure!", def.name), 3.0));
+        }
     }
 
     spawner.timer -= time.delta_secs();
@@ -219,7 +328,7 @@ pub(super) fn spawn_enemies(
         let a = rng.range(0.0, std::f32::consts::TAU);
         let r = rng.range(34.0, 42.0);
         let pos = ground(&world, hpos + Vec3::new(a.cos(), 0.0, a.sin()) * r, hpos.y);
-        spawn_enemy(&mut commands, &mut run, def, pos, hpos, false);
+        spawn_enemy(&mut commands, &mut run, def, pos, hpos, false, false);
     }
 }
 
@@ -234,6 +343,7 @@ pub(super) fn move_enemies(
     mut enemies: Query<(Entity, &mut Transform, &mut Enemy, &mut MovementState), Without<Hero>>,
     mut fx: Fx,
     mut hits: MessageWriter<Hit>,
+    mut rng: ResMut<Rng>,
 ) {
     let dt = time.delta_secs();
     if dt <= 0.0 {
@@ -310,6 +420,7 @@ pub(super) fn move_enemies(
         if e.weaken_t <= 0.0 {
             e.weaken = 1.0;
         }
+        e.st.tick(dt);
         let pos = tf.translation;
         let to_hero = flat(hpos - pos);
         let dist = to_hero.length();
@@ -323,7 +434,8 @@ pub(super) fn move_enemies(
 
         // Under Fade the horde has lost the hero: it mills where it stands.
         let lost = run.mobile.vanish_t > 0.0 && !e.boss;
-        let held = e.stun_t > 0.0 || e.root_t > 0.0 || lost;
+        let frozen = e.st.frozen_t > 0.0;
+        let held = e.stun_t > 0.0 || e.root_t > 0.0 || frozen || lost;
         let contact = dist <= HERO_RADIUS + e.radius + 0.35;
         let mut step = Vec3::ZERO;
         let mut speed = 0.0;
@@ -334,7 +446,8 @@ pub(super) fn move_enemies(
                 to_hero.normalize_or_zero()
             };
             if !contact || e.fear_t > 0.0 {
-                speed = e.speed * e.slow;
+                // Each chill stack slows a little more.
+                speed = e.speed * e.slow * (1.0 - 0.06 * f32::from(e.st.chill));
                 step = dir * speed;
             }
             if dir != Vec3::ZERO {
@@ -357,19 +470,41 @@ pub(super) fn move_enemies(
         if contact
             && !lost
             && e.stun_t <= 0.0
+            && !frozen
             && e.fear_t <= 0.0
             && e.attack_cd <= 0.0
             && !hero_down
         {
             e.attack_cd = if e.boss { 1.0 } else { 1.3 };
-            let raw = e.damage * e.weaken;
-            let taken = hero::hurt_hero(&mut run, raw);
-            fx.swing(ent, hero_e, taken);
+            let stats = run.stats();
+            // A dodge, or Quel'Serrar's ward, turns the blow aside.
+            let warded = run.has_relic("quelserrar") && run.b.quel_cd <= 0.0;
+            if warded {
+                run.b.quel_cd = 6.0;
+            }
+            let taken = if warded || rng.f32() < stats.dodge {
+                fx.swing(ent, hero_e, 0.0);
+                0.0
+            } else {
+                let raw = e.damage * e.weaken;
+                let taken = hero::hurt_hero(&mut run, raw);
+                fx.swing(ent, hero_e, taken);
+                taken
+            };
             if taken > 0.0 {
                 fx.number(hero_e, taken, false, COLOR_HURT);
             }
             if run.thorns_t > 0.0 {
                 hits.write(Hit::direct(ent, run.thorns * run.stats().might, false));
+            }
+            if run.has_relic("gift_arthas") && e.dots.len() < 6 {
+                e.dots.push(Dot {
+                    dps: 20.0 * stats.might,
+                    left: 5.0,
+                    tick: 1.0,
+                    school: super::synergy::School::Shadow.bit(),
+                    haunt: false,
+                });
             }
         }
     }
@@ -421,6 +556,14 @@ pub(super) fn drop_loot(
 ) {
     let mut count = gems.iter().count();
     for d in drops.read() {
+        if d.boss || d.elite {
+            spawn_gem(
+                &mut commands,
+                run.guid(),
+                d.pos - Vec3::X * 0.8,
+                GemKind::Chest(d.boss),
+            );
+        }
         if d.boss || rng.f32() < 0.015 {
             let heal = GemKind::Heal(if d.boss { 1000.0 } else { 30.0 });
             spawn_gem(&mut commands, run.guid(), d.pos + Vec3::X * 0.8, heal);
@@ -477,6 +620,7 @@ pub(super) fn collect_gems(
             match g.kind {
                 GemKind::Xp(xp) => run.xp += xp as f32 * data::XP_RATE * stats.growth,
                 GemKind::Heal(hp) => run.hp = (run.hp + hp).min(stats.max_hp),
+                GemKind::Chest(boss) => run.chests.push(boss),
             }
             commands.entity(e).despawn();
             continue;
@@ -488,13 +632,13 @@ pub(super) fn collect_gems(
         run.xp -= data::xp_to_next(run.level);
         run.level += 1;
         run.pending_levels += 1;
-        if run.level == super::mobility::LEARN_LEVEL {
+        if run.level == super::mobility::LEARN_LEVEL && run.kit().is_none() {
             if let Some(m) = super::mobility::for_class(run.class.id) {
                 run.banner = Some((format!("You have learned {}! Press F.", m.name), 4.0));
             }
         }
     }
-    if run.pending_levels > 0 {
+    if run.pending_levels > 0 || !run.chests.is_empty() {
         next.set(Phase::LevelUp);
     }
 }

@@ -14,6 +14,7 @@ use bevy::window::PrimaryWindow;
 use super::data::{self, AbilityDef, Effect, Kind, PassiveDef, Stat};
 use super::hero::{self, Hero};
 use super::minimap::{self, MiniMap};
+use super::synergy::{self, ComboDef, Need, RelicDef, Req, RuneDef, TalentDef, Tier, TreeDef};
 use super::{Owned, Phase, Rng, Run, Selection, Stats};
 
 const GOLD: Color = Color::srgb(1.0, 0.82, 0.0);
@@ -71,6 +72,15 @@ pub(super) struct OfferRow;
 /// The line under LEVEL UP: which level this is.
 #[derive(Component)]
 pub(super) struct LevelUpSub;
+/// The picker's title: LEVEL UP, TREASURE, FORGET.
+#[derive(Component)]
+pub(super) struct LevelUpTitle;
+/// The line of tools under the cards.
+#[derive(Component)]
+pub(super) struct OfferHint;
+/// The class resource, under the clock.
+#[derive(Component)]
+pub(super) struct ResourceText;
 
 /// A radial cooldown sweep over one ability icon: `sweep` is the remaining fraction
 /// (1.0 = just cast, 0.0 = ready), drawn by `ui_sweep.wgsl`.
@@ -95,11 +105,11 @@ pub(super) struct AbilitySweep {
 
 /// The class mobility's action button, bottom centre over the XP bar; shown once it is learned.
 #[derive(Component)]
-pub(super) struct MobilitySlot;
+pub(super) struct MobilitySlot(u8);
 #[derive(Component)]
-pub(super) struct MobilityIcon;
+pub(super) struct MobilityIcon(u8);
 #[derive(Component)]
-pub(super) struct MobilitySweep(Handle<SweepUiMaterial>);
+pub(super) struct MobilitySweep(Handle<SweepUiMaterial>, u8);
 #[derive(Component)]
 pub(super) struct OverTitle;
 #[derive(Component)]
@@ -150,7 +160,12 @@ pub(super) struct ArtDone;
 pub(super) enum TipFor {
     Ability(usize),
     Passive(usize),
-    Mobility,
+    /// The hand-cast buttons: 0 the burst (Q), 1 the guard (E), 2 the move (F).
+    Action(u8),
+    Talent(usize),
+    Relic(usize),
+    Race,
+    Class,
 }
 
 /// The one `GameTooltip`, and the column its lines go in.
@@ -176,13 +191,67 @@ pub(super) enum Choice {
     Upgrade(usize),
     NewPassive(&'static PassiveDef),
     UpPassive(usize),
+    /// A rune for an owned ability.
+    Rune(usize, &'static RuneDef),
+    Talent(&'static TalentDef),
+    Relic(&'static RelicDef),
+    /// Learn a talent tree's deep spell.
+    Learn(&'static TreeDef),
+    /// Join two mastered spells (or a spell and an item) into a new one.
+    Combo(&'static ComboDef),
+    /// Unlearn an owned ability.
+    Forget(usize),
     Heal,
+}
+
+impl Choice {
+    /// What banishing it strikes from the run, if it can be banished.
+    pub(super) fn key(self) -> Option<&'static str> {
+        match self {
+            Choice::NewAbility(d) => Some(d.key),
+            Choice::NewPassive(p) => Some(p.key),
+            Choice::Rune(_, r) => Some(r.key),
+            Choice::Talent(t) => Some(t.key),
+            Choice::Relic(r) => Some(r.key),
+            Choice::Learn(t) => Some(t.capstone),
+            _ => None,
+        }
+    }
+
+    /// Two offers are the same card.
+    fn same(self, other: Choice) -> bool {
+        match (self, other) {
+            (Choice::Upgrade(a), Choice::Upgrade(b)) => a == b,
+            (Choice::UpPassive(a), Choice::UpPassive(b)) => a == b,
+            (Choice::Rune(a, r), Choice::Rune(b, q)) => a == b || r.key == q.key,
+            (Choice::Forget(a), Choice::Forget(b)) => a == b,
+            (Choice::Heal, Choice::Heal) => true,
+            (Choice::Combo(a), Choice::Combo(b)) => a.key == b.key,
+            (a, b) => a.key().is_some() && a.key() == b.key(),
+        }
+    }
+}
+
+/// What the cards on offer are for.
+#[derive(Clone, Copy, PartialEq, Eq, Debug, Default)]
+pub(super) enum OfferMode {
+    #[default]
+    Level,
+    /// Treasure: `true` for a boss's.
+    Treasure(bool),
+    /// Choosing a spell to unlearn.
+    Forget,
 }
 
 /// The level-up cards on offer.
 #[derive(Resource, Default)]
 pub(super) struct Offer {
     choices: Vec<Choice>,
+    pub(super) mode: OfferMode,
+    /// The next card picked is banished instead.
+    pub(super) banishing: bool,
+    /// The level-up cards to return to when a forget is called off.
+    back: Vec<Choice>,
 }
 
 impl Offer {
@@ -394,14 +463,18 @@ pub(super) fn setup_hud(
                 });
             });
             minimap::spawn_cluster(root, f, &map);
-            // The mobility button: a 36-unit action slot in `UI-Quickslot2`, its key over it.
+            // The hand-cast buttons, Q E F: 36-unit action slots in `UI-Quickslot2`, the key over
+            // each.
+            for (i, key) in ["Q", "E", "F"].into_iter().enumerate() {
+            let i = i as u8;
+            let offset = (f32::from(i) - 1.0) * (MOBILITY_SIZE + 16.0) - MOBILITY_SIZE / 2.0;
             root.spawn((
-                MobilitySlot,
+                MobilitySlot(i),
                 Node {
                     position_type: PositionType::Absolute,
                     left: Val::Percent(50.0),
                     bottom: Val::Px(24.0),
-                    margin: UiRect::left(Val::Px(-MOBILITY_SIZE / 2.0)),
+                    margin: UiRect::left(Val::Px(offset)),
                     flex_direction: FlexDirection::Column,
                     align_items: AlignItems::Center,
                     row_gap: Val::Px(2.0),
@@ -410,7 +483,7 @@ pub(super) fn setup_hud(
                 },
             ))
             .with_children(|col| {
-                col.spawn(centered(f, "F", 18.0, Color::WHITE));
+                col.spawn(centered(f, key, 18.0, Color::WHITE));
                 col.spawn((
                     Node {
                         width: Val::Px(MOBILITY_SIZE),
@@ -418,7 +491,7 @@ pub(super) fn setup_hud(
                         ..default()
                     },
                     Interaction::default(),
-                    TipFor::Mobility,
+                    TipFor::Action(i),
                 ))
                 .with_children(|slot| {
                     // `UI-Quickslot2` is the empty slot's 64×64 frame, the button 36 inside it.
@@ -438,7 +511,7 @@ pub(super) fn setup_hud(
                         UiArt::crop("Interface\\Buttons\\UI-Quickslot2", [0.0, 1.0, 0.0, 1.0]),
                     ));
                     slot.spawn((
-                        MobilityIcon,
+                        MobilityIcon(i),
                         Node {
                             width: Val::Percent(100.0),
                             height: Val::Percent(100.0),
@@ -458,10 +531,11 @@ pub(super) fn setup_hud(
                             ..default()
                         },
                         MaterialNode(handle.clone()),
-                        MobilitySweep(handle),
+                        MobilitySweep(handle, i),
                     ));
                 });
             });
+            }
             root.spawn(Node {
                 width: Val::Percent(100.0),
                 padding: UiRect::all(Val::Px(10.0)),
@@ -484,10 +558,14 @@ pub(super) fn setup_hud(
                             ..default()
                         },
                     ));
+                    // Traits, passives, talents and relics: wraps onto more lines as the build grows.
                     col.spawn((
                         PassiveRow,
                         Node {
                             column_gap: Val::Px(4.0),
+                            row_gap: Val::Px(4.0),
+                            flex_wrap: FlexWrap::Wrap,
+                            width: Val::Percent(100.0),
                             ..default()
                         },
                     ));
@@ -509,6 +587,10 @@ pub(super) fn setup_hud(
                         line.spawn((LevelText, text(f, "Level 1", 14.0, GOLD)));
                         line.spawn((KillText, text(f, "Kills 0", 14.0, Color::WHITE)));
                     });
+                    col.spawn((
+                        ResourceText,
+                        centered(f, "", 13.0, Color::srgb(1.0, 0.85, 0.5)),
+                    ));
                 });
                 // The minimap cluster's column.
                 row.spawn(Node {
@@ -672,29 +754,27 @@ pub(super) fn setup_hud(
                     ),
                     ..default()
                 },
-                BackgroundGradient(vec![
-                    Gradient::Conic(ConicGradient::new(
-                        UiPosition::CENTER,
-                        (0..24)
-                            .map(|i| {
-                                let a = i as f32 / 24.0 * std::f32::consts::TAU;
-                                let on = i % 2 == 0;
-                                AngularColorStop::new(
-                                    if on {
-                                        Color::srgba(1.0, 0.8, 0.3, 0.07)
-                                    } else {
-                                        Color::srgba(1.0, 0.8, 0.3, 0.0)
-                                    },
-                                    a,
-                                )
-                            })
-                            .collect(),
-                    )),
-                ]),
+                BackgroundGradient(vec![Gradient::Conic(ConicGradient::new(
+                    UiPosition::CENTER,
+                    (0..24)
+                        .map(|i| {
+                            let a = i as f32 / 24.0 * std::f32::consts::TAU;
+                            let on = i % 2 == 0;
+                            AngularColorStop::new(
+                                if on {
+                                    Color::srgba(1.0, 0.8, 0.3, 0.07)
+                                } else {
+                                    Color::srgba(1.0, 0.8, 0.3, 0.0)
+                                },
+                                a,
+                            )
+                        })
+                        .collect(),
+                ))]),
                 UiTransform::default(),
                 bevy::ui::FocusPolicy::Pass,
             ));
-            root.spawn(centered(f, "LEVEL UP", 52.0, GOLD));
+            root.spawn((LevelUpTitle, centered(f, "LEVEL UP", 52.0, GOLD)));
             root.spawn((
                 LevelUpSub,
                 centered(f, "Choose your power", 16.0, Color::srgb(0.85, 0.78, 0.6)),
@@ -708,7 +788,10 @@ pub(super) fn setup_hud(
                     ..default()
                 },
             ));
-            root.spawn(centered(f, "Click a card, or press 1, 2 or 3", 14.0, DIM));
+            root.spawn((
+                OfferHint,
+                centered(f, "Click a card, or press 1, 2 or 3", 14.0, DIM),
+            ));
         });
 
     // --- Pause. ---
@@ -911,26 +994,106 @@ pub(super) fn start_run(run: &mut Run, selection: &mut Selection) -> bool {
         next_guid,
         ..Run::default()
     };
-    run.abilities.push(Owned {
-        def: data::ability(class.start),
-        level: 1,
-        cd: 0.5,
-    });
+    run.abilities
+        .push(Owned::new(data::ability(class.start), 0.5));
+    // Humans talk their way into more choices.
+    if race == 1 {
+        run.rerolls += 1;
+        run.banishes += 1;
+    }
     run.hp = run.stats().max_hp;
     run.version += 1;
     true
 }
 
-fn choices_for(run: &Run, rng: &mut Rng) -> Vec<Choice> {
+/// Draw up to `n` distinct choices from a weighted pool.
+fn draw(mut pool: Vec<(Choice, f32)>, rng: &mut Rng, n: usize) -> Vec<Choice> {
+    let mut out: Vec<Choice> = Vec::with_capacity(n);
+    while out.len() < n && !pool.is_empty() {
+        let total: f32 = pool.iter().map(|(_, w)| w).sum();
+        let mut pick = rng.f32() * total;
+        let mut idx = pool.len() - 1;
+        for (i, (_, w)) in pool.iter().enumerate() {
+            if pick < *w {
+                idx = i;
+                break;
+            }
+            pick -= w;
+        }
+        let c = pool.swap_remove(idx).0;
+        if !out.iter().any(|o| o.same(c)) {
+            out.push(c);
+        }
+    }
+    out
+}
+
+/// Whether a talent's requirement is met by the build.
+pub(super) fn talent_open(t: &TalentDef, run: &Run) -> bool {
+    let schools = run.schools();
+    match t.req {
+        // A general talent that one of the class's trees holds is taken there instead.
+        Req::None => !synergy::TALENTS
+            .iter()
+            .any(|x| x.key == t.key && matches!(x.req, Req::Tree(c, ..) if c == run.class.id)),
+        Req::Duo(a, b) => synergy::has(schools, a) && synergy::has(schools, b),
+        Req::Tree(c, tree, tier) => run.class.id == c && run.tree_points(tree) >= tier,
+    }
+}
+
+/// Whether the build has taken any talent-tree specialization yet.
+fn specialized(run: &Run) -> bool {
+    run.talents.iter().any(|t| matches!(t.req, Req::Tree(..)))
+}
+
+/// Trees whose two talents are taken and whose deep spell is not yet learned.
+fn learnable(run: &Run) -> Vec<&'static TreeDef> {
+    synergy::trees(run.class.id)
+        .filter(|(i, t)| {
+            run.tree_points(*i) >= 2 && !run.abilities.iter().any(|o| o.def.key == t.capstone)
+        })
+        .map(|(_, t)| t)
+        .collect()
+}
+
+/// Whether a combination's needs are all met, and its spell not yet learned.
+pub(super) fn combo_ready(c: &ComboDef, run: &Run) -> bool {
+    if run.abilities.iter().any(|o| o.def.key == c.key) || run.banished.contains(&c.key) {
+        return false;
+    }
+    let max = |o: &Owned| o.level >= data::MAX_ABILITY_LEVEL;
+    c.needs.iter().all(|n| match *n {
+        Need::Max(k) => run.abilities.iter().any(|o| o.def.key == k && max(o)),
+        Need::MaxSchool(s) => run
+            .abilities
+            .iter()
+            .any(|o| max(o) && synergy::has(o.schools(), s) && !synergy::bonus_spell(o.def.key)),
+        Need::Relic(k) => run.has_relic(k),
+    })
+}
+
+fn level_pool(run: &Run, rng: &mut Rng) -> Vec<(Choice, f32)> {
+    let banned = |k: &str| run.banished.contains(&k);
     let mut pool: Vec<(Choice, f32)> = Vec::new();
     for (i, o) in run.abilities.iter().enumerate() {
         if o.level < data::MAX_ABILITY_LEVEL {
             pool.push((Choice::Upgrade(i), 1.2));
         }
+        // An open rune slot offers one rune that fits.
+        if o.runes.len() < synergy::rune_slots(o.level) {
+            let fits: Vec<&'static RuneDef> = synergy::RUNES
+                .iter()
+                .filter(|r| synergy::rune_fits(r, o.def.kind, o.schools()))
+                .filter(|r| !o.has_rune(r.key) && !banned(r.key))
+                .collect();
+            if !fits.is_empty() {
+                pool.push((Choice::Rune(i, fits[rng.index(fits.len())]), 1.4));
+            }
+        }
     }
-    if run.abilities.len() < data::MAX_ABILITIES {
+    if run.slots_used() < run.max_abilities() {
         for key in run.class.pool {
-            if !run.abilities.iter().any(|o| o.def.key == *key) {
+            if !run.abilities.iter().any(|o| o.def.key == *key) && !banned(key) {
                 pool.push((Choice::NewAbility(data::ability(key)), 1.0));
             }
         }
@@ -942,24 +1105,53 @@ fn choices_for(run: &Run, rng: &mut Rng) -> Vec<Choice> {
     }
     if run.passives.len() < data::MAX_PASSIVES {
         for p in data::PASSIVES {
-            if !run.passives.iter().any(|(q, _)| q.key == p.key) {
+            if !run.passives.iter().any(|(q, _)| q.key == p.key) && !banned(p.key) {
                 pool.push((Choice::NewPassive(p), 0.5));
             }
         }
     }
-    let mut out = Vec::with_capacity(3);
-    while out.len() < 3 && !pool.is_empty() {
-        let total: f32 = pool.iter().map(|(_, w)| w).sum();
-        let mut pick = rng.f32() * total;
-        let mut idx = pool.len() - 1;
-        for (i, (_, w)) in pool.iter().enumerate() {
-            if pick < *w {
-                idx = i;
-                break;
+    if run.level >= 3 && run.talents.len() < run.max_talents() {
+        for t in synergy::TALENTS {
+            if run.has_talent(t.key) || banned(t.key) || !talent_open(t, run) {
+                continue;
             }
-            pick -= w;
+            let w = match t.req {
+                Req::Duo(..) => 0.8,
+                Req::Tree(..) => 0.6,
+                Req::None if t.cursed => 0.18,
+                Req::None => 0.25,
+            };
+            pool.push((Choice::Talent(t), w));
         }
-        out.push(pool.swap_remove(idx).0);
+    }
+    // A tree's deep spell, once both its talents are taken.
+    for t in learnable(run) {
+        if !banned(t.capstone) {
+            pool.push((Choice::Learn(t), 2.5));
+        }
+    }
+    pool
+}
+
+fn level_choices(run: &Run, rng: &mut Rng) -> Vec<Choice> {
+    // The first level-up chooses the specialization: one card per talent tree.
+    if !specialized(run) {
+        let specs: Vec<Choice> = synergy::TALENTS
+            .iter()
+            .filter(|t| matches!(t.req, Req::Tree(c, _, 0) if c == run.class.id))
+            .filter(|t| !run.banished.contains(&t.key))
+            .map(Choice::Talent)
+            .collect();
+        if !specs.is_empty() {
+            return specs;
+        }
+    }
+    let pool = level_pool(run, rng);
+    let mut out = draw(pool, rng, 3);
+    // A ready combination always shows, first.
+    if let Some(c) = synergy::COMBOS.iter().find(|c| combo_ready(c, run)) {
+        out.truncate(2);
+        out.insert(0, Choice::Combo(c));
     }
     if out.is_empty() {
         out.push(Choice::Heal);
@@ -967,8 +1159,203 @@ fn choices_for(run: &Run, rng: &mut Rng) -> Vec<Choice> {
     out
 }
 
+/// Whether the cards on offer are the specialization choice.
+pub(super) fn spec_offer(run: &Run, offer: &Offer) -> bool {
+    offer.mode == OfferMode::Level
+        && !specialized(run)
+        && offer
+            .choices
+            .iter()
+            .all(|c| matches!(c, Choice::Talent(t) if matches!(t.req, Req::Tree(..))))
+}
+
+fn treasure_pool(run: &Run, boss: bool) -> Vec<(Choice, f32)> {
+    // A piece whose forged whole is already carried never drops again.
+    let forged_away = |key: &str| {
+        synergy::FORGES
+            .iter()
+            .any(|(a, b, c)| (key == *a || key == *b) && run.has_relic(c))
+    };
+    synergy::RELICS
+        .iter()
+        .filter(|r| !r.forged && (boss || !r.boss))
+        .filter(|r| !run.has_relic(r.key) && !run.banished.contains(&r.key))
+        .filter(|r| !forged_away(r.key))
+        .map(|r| {
+            let w = match (boss, r.tier) {
+                (true, _) if r.boss => 2.0,
+                (true, Tier::Legendary | Tier::Epic) => 1.0,
+                (true, Tier::Rare) => 0.5,
+                (false, Tier::Rare) => 1.0,
+                (false, _) => 0.5,
+            };
+            (Choice::Relic(r), w)
+        })
+        .collect()
+}
+
+fn treasure_choices(run: &Run, rng: &mut Rng, boss: bool) -> Vec<Choice> {
+    let mut out = draw(treasure_pool(run, boss), rng, 3);
+    if out.is_empty() {
+        out.push(Choice::Heal);
+    }
+    out
+}
+
+/// The next offer: treasure first, then the level-ups.
+pub(super) fn next_offer(run: &Run, rng: &mut Rng, offer: &mut Offer) {
+    offer.banishing = false;
+    offer.back.clear();
+    if let Some(&boss) = run.chests.first() {
+        offer.mode = OfferMode::Treasure(boss);
+        offer.choices = treasure_choices(run, rng, boss);
+    } else {
+        offer.mode = OfferMode::Level;
+        offer.choices = level_choices(run, rng);
+    }
+}
+
 pub(super) fn roll_offer(run: Res<Run>, mut rng: ResMut<Rng>, mut offer: ResMut<Offer>) {
-    offer.choices = choices_for(&run, &mut rng);
+    next_offer(&run, &mut rng, &mut offer);
+}
+
+/// R: three fresh cards.
+pub(super) fn reroll(run: &mut Run, offer: &mut Offer, rng: &mut Rng) -> bool {
+    if run.rerolls == 0 || offer.mode == OfferMode::Forget || spec_offer(run, offer) {
+        return false;
+    }
+    run.rerolls -= 1;
+    offer.banishing = false;
+    offer.choices = match offer.mode {
+        OfferMode::Treasure(boss) => treasure_choices(run, rng, boss),
+        _ => level_choices(run, rng),
+    };
+    true
+}
+
+/// B: the next card picked is struck from the run instead.
+pub(super) fn toggle_banish(run: &Run, offer: &mut Offer) -> bool {
+    if offer.mode == OfferMode::Forget
+        || spec_offer(run, offer)
+        || (run.banishes == 0 && !offer.banishing)
+    {
+        return false;
+    }
+    offer.banishing = !offer.banishing;
+    true
+}
+
+/// Strike card `i` from the run, and deal another in its place.
+pub(super) fn banish(i: usize, run: &mut Run, offer: &mut Offer, rng: &mut Rng) -> bool {
+    let Some(key) = offer.choices.get(i).and_then(|c| c.key()) else {
+        return false;
+    };
+    run.banished.push(key);
+    run.banishes -= 1;
+    offer.banishing = false;
+    let pool = match offer.mode {
+        OfferMode::Treasure(boss) => treasure_pool(run, boss),
+        _ => level_pool(run, rng),
+    };
+    let others: Vec<Choice> = offer
+        .choices
+        .iter()
+        .enumerate()
+        .filter(|&(j, _)| j != i)
+        .map(|(_, c)| *c)
+        .collect();
+    let pool: Vec<(Choice, f32)> = pool
+        .into_iter()
+        .filter(|(c, _)| !others.iter().any(|o| o.same(*c)))
+        .collect();
+    match draw(pool, rng, 1).first() {
+        Some(&c) => offer.choices[i] = c,
+        None => {
+            offer.choices.remove(i);
+            if offer.choices.is_empty() {
+                offer.choices.push(Choice::Heal);
+            }
+        }
+    }
+    true
+}
+
+/// X: choose a spell to unlearn, or go back to the level-up.
+pub(super) fn toggle_forget(run: &Run, offer: &mut Offer) -> bool {
+    match offer.mode {
+        OfferMode::Forget => {
+            offer.mode = OfferMode::Level;
+            offer.choices = std::mem::take(&mut offer.back);
+            true
+        }
+        OfferMode::Level if run.forgets > 0 && run.abilities.len() > 1 => {
+            offer.banishing = false;
+            offer.back = std::mem::take(&mut offer.choices);
+            offer.mode = OfferMode::Forget;
+            offer.choices = (0..run.abilities.len()).map(Choice::Forget).collect();
+            true
+        }
+        _ => false,
+    }
+}
+
+/// What forgetting an ability gives back: a pick for every rank past the first, and every rune.
+pub(super) fn refund(o: &Owned) -> u32 {
+    u32::from(o.level - 1) + o.runes.len() as u32
+}
+
+/// Take a relic, and forge any pair it completes.
+fn take_relic(run: &mut Run, r: &'static RelicDef) {
+    run.relics.push(r);
+    match r.key {
+        "atiesh" => {
+            for o in &mut run.abilities {
+                o.boost = 1;
+            }
+        }
+        "hourglass" => {
+            run.rerolls += 2;
+            run.banishes += 2;
+            run.forgets += 2;
+        }
+        _ => {}
+    }
+    for (a, b, c) in synergy::FORGES {
+        if run.has_relic(a) && run.has_relic(b) {
+            run.relics.retain(|x| x.key != *a && x.key != *b);
+            let forged = synergy::relic_def(c);
+            run.relics.push(forged);
+            run.banner = Some((format!("Forged {}!", forged.name), 4.0));
+        }
+    }
+}
+
+/// A specialization's first talent turns the class's starting spell into the tree's own,
+/// keeping its rank and whatever enchants still fit.
+fn specialize(run: &mut Run, class: u8, tree: u8) {
+    let Some(def) = synergy::tree_def(class, tree) else {
+        return;
+    };
+    run.banner = Some(match run.kit() {
+        Some(k) => (
+            format!(
+                "{}: Q {}, E {}, F {}",
+                def.name, k.burst.name, k.guard.name, k.mobility.name
+            ),
+            5.0,
+        ),
+        None => (format!("{} specialization", def.name), 3.0),
+    });
+    let Some(to) = def.swap else { return };
+    if run.abilities.iter().any(|o| o.def.key == to) {
+        return;
+    }
+    let start = run.class.start;
+    if let Some(o) = run.abilities.iter_mut().find(|o| o.def.key == start) {
+        o.def = data::ability(to);
+        let (kind, schools) = (o.def.kind, o.schools());
+        o.runes.retain(|r| synergy::rune_fits(r, kind, schools));
+    }
 }
 
 pub(super) fn pick(
@@ -981,23 +1368,72 @@ pub(super) fn pick(
     let Some(&choice) = offer.choices.get(i) else {
         return;
     };
+    let mode = offer.mode;
     match choice {
-        Choice::NewAbility(def) => run.abilities.push(Owned {
-            def,
-            level: 1,
-            cd: 0.3,
-        }),
+        Choice::NewAbility(def) => {
+            let boost = u8::from(run.has_relic("atiesh"));
+            run.abilities.push(Owned {
+                boost,
+                ..Owned::new(def, 0.3)
+            });
+        }
         Choice::Upgrade(k) => run.abilities[k].level += 1,
         Choice::NewPassive(p) => run.passives.push((p, 1)),
         Choice::UpPassive(k) => run.passives[k].1 += 1,
+        Choice::Rune(k, r) => run.abilities[k].runes.push(r),
+        Choice::Talent(t) => {
+            run.talents.push(t);
+            if let Req::Tree(c, tree, 0) = t.req {
+                specialize(run, c, tree);
+            }
+        }
+        Choice::Relic(r) => take_relic(run, r),
+        Choice::Learn(t) => {
+            let boost = u8::from(run.has_relic("atiesh"));
+            run.abilities.push(Owned {
+                boost,
+                ..Owned::new(data::ability(t.capstone), 0.3)
+            });
+            run.banner = Some((format!("{} mastery: a new spell!", t.name), 3.0));
+        }
+        Choice::Combo(c) => {
+            let boost = u8::from(run.has_relic("atiesh"));
+            run.abilities.push(Owned {
+                boost,
+                ..Owned::new(data::ability(c.key), 0.3)
+            });
+            run.banner = Some(("Combination unlocked!".into(), 3.5));
+        }
+        Choice::Forget(k) => {
+            let gone = run.abilities.remove(k);
+            run.pending_levels += refund(&gone);
+            run.forgets -= 1;
+            run.banner = Some(("Unlearned. Your training returns to you.".into(), 2.5));
+        }
         Choice::Heal => run.hp = run.stats().max_hp,
     }
     run.version += 1;
-    run.pending_levels = run.pending_levels.saturating_sub(1);
-    if run.pending_levels > 0 {
-        offer.choices = choices_for(run, rng);
+    match mode {
+        OfferMode::Treasure(_) => {
+            if !run.chests.is_empty() {
+                run.chests.remove(0);
+            }
+        }
+        OfferMode::Level => {
+            run.pending_levels = run.pending_levels.saturating_sub(1);
+            if run.has_relic("hero_charm") {
+                run.b.charm_t = 10.0;
+            }
+        }
+        OfferMode::Forget => {}
+    }
+    let max = run.stats().max_hp;
+    run.hp = run.hp.min(max);
+    if run.pending_levels > 0 || !run.chests.is_empty() {
+        next_offer(run, rng, offer);
     } else {
         offer.choices.clear();
+        offer.mode = OfferMode::Level;
         next.set(Phase::Playing);
     }
 }
@@ -1206,7 +1642,187 @@ pub(super) fn describe_card(
             desc: "Everything is mastered. Restores all health.".into(),
             ranks: None,
         },
+        Choice::Rune(k, r) => {
+            let o = &run.abilities[k];
+            CardText {
+                spell: r.spell,
+                name: r.name.into(),
+                tag: format!("Enchant {}", spell_name(spells, o.def.spell, o.def.key)),
+                tag_color: Color::srgb(0.55, 0.85, 1.0),
+                desc: r.desc.into(),
+                ranks: Some((
+                    o.runes.len() as u8,
+                    synergy::rune_slots(data::MAX_ABILITY_LEVEL) as u8,
+                )),
+            }
+        }
+        Choice::Talent(t) => {
+            let mut desc = t.desc.to_string();
+            if let Req::Tree(c, tree, 0) = t.req {
+                if let Some(swap) = synergy::tree_def(c, tree).and_then(|d| d.swap) {
+                    let from = data::ability(run.class.start);
+                    if run.abilities.iter().any(|o| o.def.key == from.key) {
+                        let to = data::ability(swap);
+                        desc = format!(
+                            "{desc}\nYour {} becomes {}.",
+                            spell_name(spells, from.spell, from.key),
+                            spell_name(spells, to.spell, to.key)
+                        );
+                    }
+                }
+            }
+            CardText {
+                spell: t.spell,
+                name: t.name.into(),
+                tag: talent_tag(t),
+                tag_color: if t.cursed { CURSED } else { new },
+                desc,
+                ranks: None,
+            }
+        }
+        Choice::Learn(t) => {
+            let def = data::ability(t.capstone);
+            let c = cast_at(def, 1, &run.stats());
+            CardText {
+                spell: def.spell,
+                name: spell_name(spells, def.spell, def.key),
+                tag: format!("{} deep talent: new spell", t.name),
+                tag_color: super::cards::LEGENDARY,
+                desc: format!("{}. Takes no spell slot.", ability_body(def, &c)),
+                ranks: Some((0, data::MAX_ABILITY_LEVEL)),
+            }
+        }
+        Choice::Combo(c) => {
+            let def = data::ability(c.key);
+            let parts: Vec<String> = c
+                .needs
+                .iter()
+                .map(|n| match *n {
+                    Need::Max(k) => {
+                        let d = data::ability(k);
+                        spell_name(spells, d.spell, d.key)
+                    }
+                    Need::MaxSchool(s) => format!("a {} spell", s.name()),
+                    Need::Relic(k) => synergy::relic_def(k).name.to_string(),
+                })
+                .collect();
+            CardText {
+                spell: def.spell,
+                name: spell_name(spells, def.spell, def.key),
+                tag: format!("Combination: {}", parts.join(" + ")),
+                tag_color: super::cards::LEGENDARY,
+                desc: format!("{} Takes no spell slot.", c.desc),
+                ranks: Some((0, data::MAX_ABILITY_LEVEL)),
+            }
+        }
+        Choice::Relic(r) => CardText {
+            spell: r.spell,
+            name: r.name.into(),
+            tag: item_tag(r).into(),
+            tag_color: if r.cursed { CURSED } else { GOLD },
+            desc: r.desc.into(),
+            ranks: None,
+        },
+        Choice::Forget(k) => {
+            let o = &run.abilities[k];
+            let back = refund(o);
+            CardText {
+                spell: o.def.spell,
+                name: spell_name(spells, o.def.spell, o.def.key),
+                tag: format!("Unlearn  (rank {})", o.level),
+                tag_color: CURSED,
+                desc: if back > 0 {
+                    format!("Unlearn it and its enchants, and win back {back} picks.")
+                } else {
+                    "Unlearn it, freeing its slot.".into()
+                },
+                ranks: None,
+            }
+        }
     }
+}
+
+/// An item's line under its name, by its quality.
+pub(super) fn item_tag(r: &RelicDef) -> &'static str {
+    match (r.cursed, r.tier) {
+        (true, _) => "Cursed item",
+        (_, Tier::Rare) => "Rare item",
+        (_, Tier::Epic) => "Epic item",
+        (_, Tier::Legendary) => "Legendary item",
+    }
+}
+
+/// The red of a curse and an unlearn.
+pub(super) const CURSED: Color = Color::srgb(1.0, 0.3, 0.25);
+
+/// A talent's line under its name: what kind of talent it is.
+pub(super) fn talent_tag(t: &TalentDef) -> String {
+    match t.req {
+        _ if t.cursed => "Cursed talent".into(),
+        Req::Duo(a, b) => format!("Hybrid talent: {} + {}", a.name(), b.name()),
+        Req::Tree(c, tree, tier) => {
+            let name = synergy::tree_def(c, tree).map_or("", |d| d.name);
+            if tier == 0 {
+                format!("{name} specialization")
+            } else {
+                format!("{name} talent, tier 2")
+            }
+        }
+        Req::None => "Talent".into(),
+    }
+}
+
+/// The class resource and the build's running surges, in a line under the clock.
+fn resource_line(run: &Run) -> String {
+    let b = &run.b;
+    let mut parts: Vec<String> = Vec::new();
+    match run.class.id {
+        1 if b.surge_t > 0.0 => parts.push(format!("ENRAGED {}s", b.surge_t.ceil())),
+        1 => parts.push(format!("Rage {}", b.res as u32)),
+        2 => parts.push(format!("Holy Power {}", b.res as u32)),
+        3 if b.surge_t > 0.0 => parts.push(format!("RAPID FIRE {}s", b.surge_t.ceil())),
+        3 => parts.push("Hunter's Mark".into()),
+        4 if b.res >= 5.0 => parts.push("Combo 5/5  FINISHER READY".into()),
+        4 => parts.push(format!("Combo {}/5", b.res as u32)),
+        7 => {
+            let n = if run.has_talent("elemental_mastery") {
+                3
+            } else {
+                5
+            };
+            parts.push(format!("Overload in {}", n - b.casts % n))
+        }
+        8 if b.last_school != 0 => parts.push(format!(
+            "Master of Elements: next non-{} spell +{}",
+            synergy::primary(b.last_school).name(),
+            if run.has_talent("combustion") {
+                "45%"
+            } else {
+                "20%"
+            }
+        )),
+        9 => parts.push(format!("Soul Shards {}/5", b.res as u32)),
+        11 if b.lunar_t > 0.0 => parts.push(format!("LUNAR ECLIPSE {}s", b.lunar_t.ceil())),
+        11 if b.solar_t > 0.0 => parts.push(format!("SOLAR ECLIPSE {}s", b.solar_t.ceil())),
+        11 => parts.push(format!("Lunar {}/5  Solar {}/5", b.nature_n, b.arcane_n)),
+        _ => {}
+    }
+    if b.arcane > 0 {
+        parts.push(format!("Arcane Charges {}", b.arcane));
+    }
+    for (on, name) in [
+        (b.fury_t > 0.0, "Blood Fury"),
+        (b.stone_t > 0.0, "Stoneform"),
+        (b.ephemeral_t > 0.0, "Ephemeral Power"),
+        (b.charm_t > 0.0, "Unstable Power"),
+        (b.zeal > 0, "Judgement of Light"),
+        (b.flurry_t > 0.0, "Flurry"),
+    ] {
+        if on {
+            parts.push(name.into());
+        }
+    }
+    parts.join("   ")
 }
 
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
@@ -1225,6 +1841,7 @@ pub(super) fn refresh_hud(
         Query<&mut Text, With<OverTitle>>,
         Query<&mut Text, With<OverStats>>,
         Query<&mut Text, With<XpText>>,
+        Query<&mut Text, With<ResourceText>>,
     )>,
     mut xp_fill: Query<&mut Node, With<XpFill>>,
     rows: Query<(Entity, Has<AbilityRow>), Or<(With<AbilityRow>, With<PassiveRow>)>>,
@@ -1251,6 +1868,12 @@ pub(super) fn refresh_hud(
     let kills = run.kills;
     if let Ok(mut t) = texts.p2().single_mut() {
         **t = format!("Kills {kills}");
+    }
+    let resource = resource_line(&run);
+    if let Ok(mut t) = texts.p7().single_mut() {
+        if **t != resource {
+            **t = resource;
+        }
     }
     let banner = match run.banner.as_mut() {
         Some((msg, t)) => {
@@ -1307,20 +1930,56 @@ pub(super) fn refresh_hud(
     for (row, is_abilities) in &rows {
         commands.entity(row).despawn_related::<Children>();
         commands.entity(row).with_children(|row| {
-            let entries: Vec<(u32, u8, f32, TipFor)> = if is_abilities {
+            // `(icon, rank, size, tooltip, edge)`; no rank for the talents, relics and traits.
+            let entries: Vec<(u32, Option<u8>, f32, TipFor, Color)> = if is_abilities {
                 run.abilities
                     .iter()
                     .enumerate()
-                    .map(|(i, o)| (o.def.spell, o.level, 40.0, TipFor::Ability(i)))
+                    .map(|(i, o)| {
+                        // A runed spell's edge glows rune blue.
+                        let edge = if o.runes.is_empty() {
+                            EDGE
+                        } else {
+                            Color::srgb(0.35, 0.7, 1.0)
+                        };
+                        (o.def.spell, Some(o.level), 40.0, TipFor::Ability(i), edge)
+                    })
                     .collect()
             } else {
-                run.passives
-                    .iter()
-                    .enumerate()
-                    .map(|(i, (p, l))| (p.spell, *l, 30.0, TipFor::Passive(i)))
-                    .collect()
+                let mut v: Vec<(u32, Option<u8>, f32, TipFor, Color)> = Vec::new();
+                let (race_icon, ..) = synergy::race_trait(run.race);
+                if race_icon != 0 {
+                    v.push((race_icon, None, 26.0, TipFor::Race, DIM));
+                }
+                let (class_icon, ..) = synergy::class_trait(run.class.id);
+                if class_icon != 0 {
+                    v.push((class_icon, None, 26.0, TipFor::Class, DIM));
+                }
+                v.extend(
+                    run.passives
+                        .iter()
+                        .enumerate()
+                        .map(|(i, (p, l))| (p.spell, Some(*l), 30.0, TipFor::Passive(i), EDGE)),
+                );
+                v.extend(run.talents.iter().enumerate().map(|(i, t)| {
+                    let edge = if t.cursed {
+                        CURSED
+                    } else if matches!(t.req, Req::Duo(..)) {
+                        super::cards::LEGENDARY
+                    } else if matches!(t.req, Req::Tree(..)) {
+                        super::cards::EPIC
+                    } else {
+                        super::cards::UNCOMMON
+                    };
+                    (t.spell, None, 30.0, TipFor::Talent(i), edge)
+                }));
+                v.extend(run.relics.iter().enumerate().map(|(i, r)| {
+                    let edge = if r.cursed { CURSED } else { GOLD };
+                    (r.spell, None, 30.0, TipFor::Relic(i), edge)
+                }));
+                v
             };
-            for (spell, level, size, tip) in entries {
+            for (spell, level, size, tip, edge) in entries {
                 let ability = match &tip {
                     TipFor::Ability(i) => Some(*i),
                     _ => None,
@@ -1332,7 +1991,7 @@ pub(super) fn refresh_hud(
                         border: UiRect::all(Val::Px(1.0)),
                         ..default()
                     },
-                    BorderColor::all(EDGE),
+                    BorderColor::all(edge),
                     Interaction::default(),
                     tip,
                 ))
@@ -1352,15 +2011,17 @@ pub(super) fn refresh_hud(
                             AbilitySweep { handle, index: i },
                         ));
                     }
-                    slot.spawn(Node {
-                        position_type: PositionType::Absolute,
-                        right: Val::Px(2.0),
-                        bottom: Val::Px(0.0),
-                        ..default()
-                    })
-                    .with_children(|n| {
-                        n.spawn(text(f, level.to_string(), 12.0, Color::WHITE));
-                    });
+                    if let Some(level) = level {
+                        slot.spawn(Node {
+                            position_type: PositionType::Absolute,
+                            right: Val::Px(2.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        })
+                        .with_children(|n| {
+                            n.spawn(text(f, level.to_string(), 12.0, Color::WHITE));
+                        });
+                    }
                 });
             }
         });
@@ -1403,19 +2064,32 @@ pub(super) fn fill_icons(
     }
 }
 
-/// The mobility button: shown once learned, its icon the class's spell, its sweep the cooldown.
+/// The hand-cast buttons: each shown once learned, its icon the spell, its sweep the cooldown.
 #[allow(clippy::type_complexity)]
 pub(super) fn refresh_mobility(
     run: Res<Run>,
     mut commands: Commands,
-    mut slot: Query<&mut Node, With<MobilitySlot>>,
-    icon: Query<(Entity, Option<&SpellIcon>), With<MobilityIcon>>,
-    sweep: Query<&MobilitySweep>,
+    mut slots: Query<(&mut Node, &MobilitySlot)>,
+    icons: Query<(Entity, Option<&SpellIcon>, &MobilityIcon)>,
+    sweeps: Query<&MobilitySweep>,
     mut mats: ResMut<Assets<SweepUiMaterial>>,
 ) {
-    let def = run.mobility();
-    if let Ok(mut node) = slot.single_mut() {
-        let display = if def.is_some() {
+    // Each button's spell and cooldown fraction left.
+    let action = |i: u8| -> Option<(u32, f32)> {
+        match i {
+            0 | 1 => run
+                .active(usize::from(i))
+                .map(|d| (d.spell, run.act_sweep(usize::from(i)))),
+            _ => run.mobility().map(|m| {
+                (
+                    m.spell,
+                    (run.mobile.cd / m.cooldown.max(0.01)).clamp(0.0, 1.0),
+                )
+            }),
+        }
+    };
+    for (mut node, slot) in &mut slots {
+        let display = if action(slot.0).is_some() {
             Display::Flex
         } else {
             Display::None
@@ -1424,18 +2098,18 @@ pub(super) fn refresh_mobility(
             node.display = display;
         }
     }
-    let Some(def) = def else { return };
     // A new spell re-arms the icon fill ([`fill_icons`]).
-    if let Ok((e, have)) = icon.single() {
-        if have.is_none_or(|s| s.0 != def.spell) {
+    for (e, have, icon) in &icons {
+        let Some((spell, _)) = action(icon.0) else { continue };
+        if have.is_none_or(|s| s.0 != spell) {
             commands
                 .entity(e)
                 .remove::<IconDone>()
-                .insert(SpellIcon(def.spell));
+                .insert(SpellIcon(spell));
         }
     }
-    if let Ok(s) = sweep.single() {
-        let f = (run.mobile.cd / def.cooldown.max(0.01)).clamp(0.0, 1.0);
+    for s in &sweeps {
+        let Some((_, f)) = action(s.1) else { continue };
         if let Some(m) = mats.get_mut(&s.0) {
             if m.sweep != f {
                 m.sweep = f;
@@ -1715,9 +2389,8 @@ struct Cast {
 
 fn cast_at(def: &'static AbilityDef, level: u8, stats: &Stats) -> Cast {
     let o = Owned {
-        def,
         level,
-        cd: 0.0,
+        ..Owned::new(def, 0.0)
     };
     let mult = o.damage_mult() * stats.might;
     Cast {
@@ -1908,17 +2581,38 @@ fn ability_tip(
             .right(format!("{} sec cooldown", num(now.cooldown)), Color::WHITE),
     );
     lines.push(TipLine::new(ability_body(def, &now), GOLD));
+    let schools: Vec<&str> = synergy::School::ALL
+        .into_iter()
+        .filter(|s| synergy::has(o.schools(), *s))
+        .map(|s| s.name())
+        .collect();
+    lines.push(TipLine::new(format!("{} damage", schools.join(" + ")), DIM));
     if !matches!(
         def.kind,
         Kind::Shield | Kind::Immune | Kind::Heal | Kind::Dot
     ) {
         lines.push(TipLine::new(
             format!(
-                "{} chance to critically strike for double damage",
-                pct(stats.crit)
+                "{} chance to critically strike for {} damage",
+                pct(stats.crit),
+                pct(stats.crit_mult)
             ),
             DIM,
         ));
+    }
+    for r in &o.runes {
+        lines.push(TipLine::new(r.name, Color::srgb(0.55, 0.85, 1.0)));
+        lines.push(TipLine::new(r.desc, Color::WHITE));
+    }
+    let slots = synergy::rune_slots(o.level);
+    if o.runes.len() < slots {
+        lines.push(TipLine::new(
+            "An enchant slot is open.",
+            Color::srgb(0.55, 0.85, 1.0),
+        ));
+    }
+    if o.rampage > 0.0 {
+        lines.push(TipLine::new(format!("Rampage: +{}", pct(o.rampage)), GOLD));
     }
     if o.level < data::MAX_ABILITY_LEVEL {
         let next = cast_at(def, o.level + 1, stats);
@@ -2132,7 +2826,54 @@ pub(super) fn icon_tooltip(
             .passives
             .get(i)
             .map(|&(p, level)| passive_tip(p, level, &stats)),
-        TipFor::Mobility => run.mobility().map(|m| {
+        TipFor::Talent(i) => run.talents.get(i).map(|t| {
+            vec![
+                TipLine::new(t.name, Color::WHITE).header(),
+                TipLine::new(talent_tag(t), if t.cursed { CURSED } else { DIM }),
+                TipLine::new(t.desc, GOLD),
+            ]
+        }),
+        TipFor::Relic(i) => run.relics.get(i).map(|r| {
+            vec![
+                TipLine::new(r.name, Color::WHITE).header(),
+                TipLine::new(item_tag(r), DIM),
+                TipLine::new(r.desc, GOLD),
+            ]
+        }),
+        TipFor::Race => {
+            let (_, name, desc) = synergy::race_trait(run.race);
+            Some(vec![
+                TipLine::new(name, Color::WHITE).header(),
+                TipLine::new(
+                    format!("{} racial trait", crate::char_select::race_name(run.race)),
+                    DIM,
+                ),
+                TipLine::new(desc, GOLD),
+            ])
+        }
+        TipFor::Class => {
+            let (_, name, desc) = synergy::class_trait(run.class.id);
+            Some(vec![
+                TipLine::new(name, Color::WHITE).header(),
+                TipLine::new(format!("{} class trait", run.class.name), DIM),
+                TipLine::new(desc, GOLD),
+            ])
+        }
+        TipFor::Action(i @ (0 | 1)) => run.active(usize::from(i)).map(|a| {
+            let what = if i == 0 { "Burst" } else { "Guard" };
+            let key = if i == 0 { "Q" } else { "E" };
+            let mut lines = vec![
+                TipLine::new(spell_name(spells.as_deref(), a.spell, a.name), Color::WHITE).header(),
+                TipLine::new(format!("{what}: press {key}"), Color::WHITE)
+                    .right(format!("{} sec cooldown", num(a.cooldown)), Color::WHITE),
+            ];
+            if a.secs > 0.0 {
+                lines.push(TipLine::new(format!("Lasts {} sec", num(a.secs)), DIM));
+            }
+            lines.push(TipLine::new(a.desc, GOLD));
+            lines
+        }),
+        TipFor::Action(_) => run.mobility().map(|m| {
             vec![
                 TipLine::new(spell_name(spells.as_deref(), m.spell, m.name), Color::WHITE).header(),
                 TipLine::new("Press F", Color::WHITE)

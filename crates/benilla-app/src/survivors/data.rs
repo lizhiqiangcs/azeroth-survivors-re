@@ -876,6 +876,694 @@ pub(crate) static ABILITIES: &[AbilityDef] = &[
             duration: 10.0
         }
     ),
+    // --- More of each class's trained spells. ---
+    ability!(
+        "rend",
+        772,
+        Dot {
+            dot: 5.0,
+            cooldown: 3.0,
+            range: 6.0,
+            count: 3,
+            duration: 9.0
+        }
+    ),
+    ability!(
+        "hamstring",
+        1715,
+        Melee {
+            damage: 14.0,
+            cooldown: 1.6,
+            range: 6.0,
+            effect: Effect::Slow(0.4, 4.0)
+        }
+    ),
+    ability!(
+        "overpower",
+        7384,
+        Melee {
+            damage: 34.0,
+            cooldown: 2.6,
+            range: 6.0
+        }
+    ),
+    ability!(
+        "revenge",
+        6572,
+        Melee {
+            damage: 26.0,
+            cooldown: 2.2,
+            range: 6.0,
+            radius: 3.0,
+            effect: Effect::Stun(0.5)
+        }
+    ),
+    ability!(
+        "intimidating_shout",
+        5246,
+        Nova {
+            damage: 6.0,
+            cooldown: 14.0,
+            radius: 9.0,
+            effect: Effect::Fear(3.0)
+        }
+    ),
+    ability!(
+        "seal_of_righteousness",
+        20154,
+        Melee {
+            damage: 20.0,
+            cooldown: 1.4,
+            range: 6.0
+        }
+    ),
+    ability!(
+        "retribution_aura",
+        7294,
+        Thorns {
+            damage: 9.0,
+            cooldown: 8.0,
+            duration: 8.0
+        }
+    ),
+    ability!(
+        "lay_on_hands",
+        633,
+        Heal {
+            damage: 120.0,
+            cooldown: 40.0,
+            duration: 1.0
+        }
+    ),
+    ability!(
+        "raptor_strike",
+        2973,
+        Melee {
+            damage: 26.0,
+            cooldown: 1.8,
+            range: 6.0
+        }
+    ),
+    ability!(
+        "wing_clip",
+        2974,
+        Melee {
+            damage: 10.0,
+            cooldown: 2.0,
+            range: 6.0,
+            count: 2,
+            effect: Effect::Root(1.5)
+        }
+    ),
+    ability!(
+        "immolation_trap",
+        13795,
+        Ground {
+            damage: 9.0,
+            cooldown: 9.0,
+            range: 20.0,
+            radius: 6.0,
+            duration: 6.0
+        }
+    ),
+    ability!(
+        "frost_trap",
+        13809,
+        Ground {
+            damage: 3.0,
+            cooldown: 11.0,
+            range: 20.0,
+            radius: 8.0,
+            duration: 8.0,
+            effect: Effect::Slow(0.4, 1.5)
+        }
+    ),
+    ability!(
+        "backstab",
+        53,
+        Melee {
+            damage: 45.0,
+            cooldown: 3.0,
+            range: 6.0
+        }
+    ),
+    ability!(
+        "garrote",
+        703,
+        Dot {
+            dot: 6.0,
+            cooldown: 3.5,
+            range: 7.0,
+            count: 2,
+            duration: 9.0
+        }
+    ),
+    ability!(
+        "ghostly_strike",
+        14278,
+        Melee {
+            damage: 24.0,
+            cooldown: 2.4,
+            range: 6.0,
+            effect: Effect::Weaken(0.6, 4.0)
+        }
+    ),
+    ability!(
+        "blind",
+        2094,
+        Strike {
+            damage: 4.0,
+            cooldown: 8.0,
+            range: 12.0,
+            count: 2,
+            effect: Effect::Stun(4.0)
+        }
+    ),
+    ability!(
+        "mana_burn",
+        8129,
+        Strike {
+            damage: 22.0,
+            cooldown: 2.2,
+            range: 22.0
+        }
+    ),
+    ability!(
+        "renew",
+        139,
+        Heal {
+            damage: 40.0,
+            cooldown: 14.0,
+            duration: 12.0
+        }
+    ),
+    ability!(
+        "touch_of_weakness",
+        2652,
+        Dot {
+            dot: 4.0,
+            cooldown: 4.0,
+            range: 18.0,
+            count: 3,
+            duration: 8.0,
+            effect: Effect::Weaken(0.7, 8.0)
+        }
+    ),
+    ability!(
+        "healing_wave",
+        331,
+        Heal {
+            damage: 45.0,
+            cooldown: 12.0,
+            duration: 1.0
+        }
+    ),
+    ability!(
+        "purge",
+        370,
+        Strike {
+            damage: 12.0,
+            cooldown: 1.6,
+            range: 20.0,
+            count: 2
+        }
+    ),
+    ability!(
+        "scorch",
+        2948,
+        Strike {
+            damage: 14.0,
+            cooldown: 1.1,
+            range: 22.0
+        }
+    ),
+    ability!(
+        "ice_barrier",
+        11426,
+        Shield {
+            damage: 45.0,
+            cooldown: 14.0,
+            duration: 10.0
+        }
+    ),
+    ability!(
+        "drain_life",
+        689,
+        Strike {
+            damage: 14.0,
+            cooldown: 1.5,
+            range: 20.0,
+            effect: Effect::Drain(0.5)
+        }
+    ),
+    ability!(
+        "howl_of_terror",
+        5484,
+        Nova {
+            damage: 6.0,
+            cooldown: 14.0,
+            radius: 9.0,
+            effect: Effect::Fear(3.0)
+        }
+    ),
+    ability!(
+        "maul",
+        6807,
+        Melee {
+            damage: 28.0,
+            cooldown: 2.0,
+            range: 6.0,
+            radius: 3.0
+        }
+    ),
+    ability!(
+        "faerie_fire",
+        770,
+        Strike {
+            damage: 8.0,
+            cooldown: 2.0,
+            range: 22.0,
+            count: 3,
+            effect: Effect::Weaken(0.8, 6.0)
+        }
+    ),
+    ability!(
+        "tranquility",
+        740,
+        Heal {
+            damage: 90.0,
+            cooldown: 30.0,
+            duration: 5.0
+        }
+    ),
+    // --- Deep talents: taught by both talents of a tree (survivors::synergy::TREES). ---
+    ability!(
+        "bloodthirst",
+        23881,
+        Melee {
+            damage: 40.0,
+            cooldown: 2.6,
+            range: 6.0,
+            effect: Effect::Drain(0.2)
+        }
+    ),
+    ability!(
+        "shield_slam",
+        23922,
+        Melee {
+            damage: 50.0,
+            cooldown: 4.0,
+            range: 6.0,
+            radius: 3.0,
+            effect: Effect::Stun(1.5)
+        }
+    ),
+    ability!(
+        "holy_shield",
+        20925,
+        Thorns {
+            damage: 22.0,
+            cooldown: 12.0,
+            duration: 10.0
+        }
+    ),
+    ability!(
+        "seal_of_command",
+        20375,
+        Melee {
+            damage: 24.0,
+            cooldown: 1.6,
+            range: 6.0,
+            count: 3
+        }
+    ),
+    ability!(
+        "bestial_wrath",
+        19574,
+        Aura {
+            damage: 14.0,
+            cooldown: 0.8,
+            radius: 6.0
+        }
+    ),
+    ability!(
+        "wyvern_sting",
+        19386,
+        Dot {
+            dot: 9.0,
+            cooldown: 6.0,
+            range: 22.0,
+            count: 2,
+            duration: 8.0,
+            effect: Effect::Stun(3.0)
+        }
+    ),
+    ability!(
+        "ambush",
+        8676,
+        Melee {
+            damage: 95.0,
+            cooldown: 5.0,
+            range: 6.0
+        }
+    ),
+    ability!(
+        "hemorrhage",
+        16511,
+        Melee {
+            damage: 30.0,
+            cooldown: 1.8,
+            range: 6.0,
+            effect: Effect::Weaken(0.7, 4.0)
+        }
+    ),
+    ability!(
+        "starshards",
+        10797,
+        Bolt {
+            damage: 10.0,
+            cooldown: 1.4,
+            range: 24.0,
+            count: 3
+        }
+    ),
+    ability!(
+        "mind_flay",
+        15407,
+        Strike {
+            damage: 16.0,
+            cooldown: 1.2,
+            range: 20.0,
+            effect: Effect::Slow(0.5, 2.0)
+        }
+    ),
+    ability!(
+        "earthquake",
+        19798,
+        Ground {
+            damage: 12.0,
+            cooldown: 9.0,
+            range: 20.0,
+            radius: 8.0,
+            duration: 6.0,
+            effect: Effect::Slow(0.5, 1.5)
+        }
+    ),
+    ability!(
+        "stormstrike",
+        17364,
+        Melee {
+            damage: 38.0,
+            cooldown: 2.2,
+            range: 7.0,
+            radius: 3.0
+        }
+    ),
+    ability!(
+        "chain_heal",
+        1064,
+        Heal {
+            damage: 60.0,
+            cooldown: 10.0,
+            duration: 3.0
+        }
+    ),
+    ability!(
+        "arcane_blast",
+        10833,
+        Bolt {
+            damage: 30.0,
+            cooldown: 1.6,
+            range: 26.0
+        }
+    ),
+    ability!(
+        "frostbolt_volley",
+        8398,
+        Bolt {
+            damage: 14.0,
+            cooldown: 2.5,
+            range: 24.0,
+            count: 5,
+            effect: Effect::Slow(0.5, 2.5),
+            mark: 116
+        }
+    ),
+    ability!(
+        "siphon_life",
+        18265,
+        Dot {
+            dot: 6.0,
+            cooldown: 3.0,
+            range: 20.0,
+            count: 3,
+            duration: 10.0,
+            effect: Effect::Drain(0.3)
+        }
+    ),
+    ability!(
+        "soul_fire",
+        6353,
+        Bolt {
+            damage: 110.0,
+            cooldown: 7.0,
+            range: 30.0,
+            radius: 3.0
+        }
+    ),
+    ability!(
+        "conflagrate",
+        17962,
+        Strike {
+            damage: 55.0,
+            cooldown: 3.5,
+            range: 24.0,
+            radius: 4.0
+        }
+    ),
+    ability!(
+        "moonkin_form",
+        24858,
+        Aura {
+            damage: 12.0,
+            cooldown: 0.9,
+            radius: 7.0
+        }
+    ),
+    ability!(
+        "swipe",
+        769,
+        Nova {
+            damage: 13.0,
+            cooldown: 2.2,
+            radius: 6.0
+        }
+    ),
+    ability!(
+        "feral_charge",
+        16979,
+        Strike {
+            damage: 35.0,
+            cooldown: 4.0,
+            range: 20.0,
+            effect: Effect::Root(2.0)
+        }
+    ),
+    ability!(
+        "swiftmend",
+        18562,
+        Heal {
+            damage: 70.0,
+            cooldown: 12.0,
+            duration: 1.0
+        }
+    ),
+    // --- Combinations: two mastered spells, or a mastered spell and a legendary item
+    // (survivors::synergy::COMBOS). ---
+    ability!(
+        "meteor",
+        24340,
+        Ground {
+            damage: 40.0,
+            cooldown: 7.0,
+            range: 24.0,
+            radius: 8.0,
+            duration: 3.0,
+            effect: Effect::Stun(1.0)
+        }
+    ),
+    ability!(
+        "frost_blast",
+        14105,
+        Nova {
+            damage: 32.0,
+            cooldown: 5.0,
+            radius: 11.0,
+            effect: Effect::Root(3.0),
+            mark: 122
+        }
+    ),
+    ability!(
+        "fireball_volley",
+        11988,
+        Bolt {
+            damage: 45.0,
+            cooldown: 2.5,
+            range: 26.0,
+            radius: 4.0,
+            count: 5
+        }
+    ),
+    ability!(
+        "bladestorm",
+        9632,
+        Aura {
+            damage: 30.0,
+            cooldown: 0.6,
+            radius: 8.0
+        }
+    ),
+    ability!(
+        "shockwave",
+        25425,
+        Cone {
+            damage: 90.0,
+            cooldown: 4.0,
+            radius: 12.0,
+            effect: Effect::Stun(2.0)
+        }
+    ),
+    ability!(
+        "crusader_strike",
+        2537,
+        Melee {
+            damage: 70.0,
+            cooldown: 1.5,
+            range: 7.0,
+            count: 3
+        }
+    ),
+    ability!(
+        "explosive_shot",
+        15495,
+        Bolt {
+            damage: 60.0,
+            cooldown: 2.0,
+            range: 26.0,
+            radius: 6.0,
+            count: 2
+        }
+    ),
+    ability!(
+        "adrenaline_rush",
+        13750,
+        Aura {
+            damage: 22.0,
+            cooldown: 0.4,
+            radius: 6.0
+        }
+    ),
+    ability!(
+        "devouring_plague",
+        2944,
+        Dot {
+            dot: 20.0,
+            cooldown: 3.0,
+            range: 22.0,
+            count: 5,
+            duration: 12.0,
+            effect: Effect::Drain(0.25)
+        }
+    ),
+    ability!(
+        "fire_nova_totem",
+        1535,
+        Totem {
+            damage: 30.0,
+            cooldown: 12.0,
+            radius: 10.0,
+            duration: 12.0,
+            totem: (4683, 8349)
+        }
+    ),
+    ability!(
+        "ball_lightning",
+        28299,
+        Bolt {
+            damage: 50.0,
+            cooldown: 1.8,
+            range: 26.0,
+            count: 4
+        }
+    ),
+    ability!(
+        "shadow_bolt_volley",
+        14887,
+        Bolt {
+            damage: 40.0,
+            cooldown: 2.4,
+            range: 26.0,
+            count: 6
+        }
+    ),
+    ability!(
+        "inferno",
+        1122,
+        Ground {
+            damage: 30.0,
+            cooldown: 10.0,
+            range: 22.0,
+            radius: 9.0,
+            duration: 6.0,
+            effect: Effect::Stun(1.5)
+        }
+    ),
+    ability!(
+        "starfall",
+        20687,
+        Ground {
+            damage: 25.0,
+            cooldown: 9.0,
+            range: 22.0,
+            radius: 10.0,
+            duration: 6.0,
+            overhead: true
+        }
+    ),
+    ability!(
+        "wrath_of_ragnaros",
+        20566,
+        Nova {
+            damage: 80.0,
+            cooldown: 6.0,
+            radius: 12.0,
+            effect: Effect::Stun(1.0)
+        }
+    ),
+    ability!(
+        "lightning_cloud",
+        6535,
+        Ground {
+            damage: 30.0,
+            cooldown: 9.0,
+            range: 22.0,
+            radius: 9.0,
+            duration: 8.0,
+            effect: Effect::Slow(0.6, 1.5)
+        }
+    ),
+    ability!(
+        "corrupted_blood",
+        24328,
+        Dot {
+            dot: 25.0,
+            cooldown: 4.0,
+            range: 22.0,
+            count: 6,
+            duration: 10.0,
+            effect: Effect::Drain(0.2)
+        }
+    ),
 ];
 
 pub(crate) fn ability(key: &str) -> &'static AbilityDef {
@@ -1001,8 +1689,12 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "sweeping_strikes",
             "demoralizing_shout",
             "execute",
-            "mortal_strike",
             "retaliation",
+            "rend",
+            "hamstring",
+            "overpower",
+            "revenge",
+            "intimidating_shout",
         ],
         looks: &[
             1300, 1374, 1375, 1504, 1578, 1599, 1707, 1721, 1880, 2096, 2103, 2113, 2196, 2198,
@@ -1021,12 +1713,14 @@ pub(crate) static CLASSES: &[ClassDef] = &[
         pool: &[
             "hammer_of_wrath",
             "consecration",
-            "holy_shock",
             "exorcism",
             "holy_wrath",
             "hammer_of_justice",
             "divine_shield",
             "judgement",
+            "seal_of_righteousness",
+            "retribution_aura",
+            "lay_on_hands",
         ],
         looks: &[
             1299, 1499, 1622, 3087, 3088, 3089, 3284, 3289, 3346, 3393, 7356,
@@ -1047,7 +1741,10 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "volley",
             "explosive_trap",
             "concussive_shot",
-            "aimed_shot",
+            "raptor_strike",
+            "wing_clip",
+            "immolation_trap",
+            "frost_trap",
         ],
         looks: &[
             1373, 1703, 1723, 1882, 2066, 2087, 2105, 2112, 2205, 2206, 2251, 3056, 3072, 3073,
@@ -1066,10 +1763,13 @@ pub(crate) static CLASSES: &[ClassDef] = &[
         pool: &[
             "sinister_strike",
             "eviscerate",
-            "blade_flurry",
             "rupture",
             "gouge",
             "kidney_shot",
+            "backstab",
+            "garrote",
+            "ghostly_strike",
+            "blind",
         ],
         looks: &[
             1297, 1327, 1328, 1507, 1580, 1603, 1704, 1725, 1886, 2231, 2243, 2252, 2631, 2639,
@@ -1089,9 +1789,11 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "shadow_word_pain",
             "holy_fire",
             "mind_blast",
-            "holy_nova",
             "psychic_scream",
             "power_word_shield",
+            "mana_burn",
+            "renew",
+            "touch_of_weakness",
         ],
         looks: &[
             1295, 1495, 1579, 1602, 1708, 1733, 1897, 2137, 2138, 2139, 2200, 2201, 2202, 2618,
@@ -1116,6 +1818,8 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "searing_totem",
             "magma_totem",
             "lightning_shield",
+            "healing_wave",
+            "purge",
         ],
         looks: &[
             1360, 1878, 2082, 2102, 2123, 3746, 3816, 4231, 4552, 10180, 13341,
@@ -1140,7 +1844,8 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "fire_blast",
             "cone_of_cold",
             "blast_wave",
-            "pyroblast",
+            "scorch",
+            "ice_barrier",
         ],
         looks: &[
             1294, 1470, 1484, 1592, 1600, 2134, 2135, 2644, 2657, 2810, 3108, 3109, 3292, 3293,
@@ -1166,6 +1871,8 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "death_coil",
             "searing_pain",
             "shadowburn",
+            "drain_life",
+            "howl_of_terror",
         ],
         looks: &[
             1324, 1325, 1326, 1469, 1581, 1604, 1884, 1930, 2637, 2646, 2675, 3115, 3116, 3122,
@@ -1189,6 +1896,9 @@ pub(crate) static CLASSES: &[ClassDef] = &[
             "entangling_roots",
             "thorns",
             "rejuvenation",
+            "maul",
+            "faerie_fire",
+            "tranquility",
         ],
         looks: &[
             1706, 1732, 2106, 2115, 2121, 2250, 2255, 2261, 3300, 3301, 3302, 3819, 3820, 7357,
@@ -1327,19 +2037,39 @@ pub(crate) fn wave_pool(elapsed: f32, tiers: usize) -> [usize; 3] {
     [lo, lo + 1, lo + 2]
 }
 
+/// The opening left in an encircling ring, in radians: a way out for whoever looks for it. A
+/// closed ring was the run's commonest death, from full health in five seconds, with nothing to
+/// be done (the balance simulator, docs/SIMULATION.md).
+pub(crate) const RING_GAP: f32 = 0.9;
+
+/// Whether a ring's place at angle `a` falls in the opening centred on `gap`.
+pub(crate) fn in_ring_gap(a: f32, gap: f32) -> bool {
+    let d = (a - gap).rem_euclid(std::f32::consts::TAU);
+    d.min(std::f32::consts::TAU - d) < RING_GAP / 2.0
+}
+
 /// How many enemies the spawner keeps alive at a point in the run.
 pub(crate) fn target_alive(elapsed: f32) -> usize {
     ((14.0 + progress(elapsed) * 225.0) as usize).min(220)
 }
 
-/// Enemy health grows on top of the tiers, so a late kill takes several spells.
+/// Enemy health grows on top of the tiers, so a late kill takes several spells. The curve bends
+/// upward: a build's synergies multiply late, and the horde has to keep up with a good one
+/// (×3 at the bell, against ×1.75 before the build layer).
 pub(crate) fn hp_scale(elapsed: f32) -> f32 {
-    1.0 + progress(elapsed) * 0.75
+    let p = progress(elapsed);
+    // ×1.9 from the balance simulator (docs/SIMULATION.md): with a blow capped at a third of
+    // the hero, the horde has to press harder for a run to be a fight.
+    1.9 * (1.0 + p * 1.1 + p * p * 0.9)
 }
 
-/// Enemy damage grows the same way.
+/// Enemy damage grows too, if less steeply: the late game should punish a build with no defence.
 pub(crate) fn damage_scale(elapsed: f32) -> f32 {
-    1.0 + progress(elapsed) * 0.9
+    let p = progress(elapsed);
+    // From the balance simulator: no blow takes more than a third of the hero
+    // (`hero::MAX_BLOW`), so the danger is the crowd's chip damage, not a boss's one-shot. Gentle
+    // at the start, where one spell cannot hold a crowd off; ×4.8 at the bell.
+    1.2 * (1.0 + p * 2.0 + p * p * 1.0)
 }
 
 /// The experience to go from `level` to the next: Vampire Survivors' curve, cheap early.

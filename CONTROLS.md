@@ -8,7 +8,9 @@
 | Menu | **Enter** (or **Enter World**) | start the run; the world travels to the zone picked |
 | Playing | **W / S / A / D** or **arrow keys** | move the hero (locked camera: the hero faces the cursor, backpedals and strafes) |
 | Playing | **Space** | jump |
-| Playing | **F** (from level 5) | your class's movement spell: Blink, Charge… aim at the cursor |
+| Playing | **Q** (once specialized) | your spec's **burst**: Recklessness, Combustion, Cold Snap… works the spec's own engine (rage, Ignite, freezes, combo points, shards…) |
+| Playing | **E** (once specialized) | your spec's **guard**: Shield Wall, Ice Block, Evasion, Barkskin… |
+| Playing | **F** (level 5, or once specialized) | your **move**: Blink, Charge, Disengage, Earthbind… aim at the cursor; the spec's own once specialized |
 | Playing | **C** | unlock / lock the camera |
 | Any | **G** | toggle the picture polish (`?grade=0` starts it off) |
 | Playing | **mouse wheel** | zoom, from over the shoulder out to 70 yd |
@@ -16,6 +18,9 @@
 | Playing | **Esc** | pause |
 | Playing | — | abilities cast themselves (no aim) |
 | Level up | **1 / 2 / 3** (or click a card) | pick an upgrade |
+| Level up / loot | **R** | reroll: deal three new cards (limited, +1 per boss slain) |
+| Level up / loot | **B**, then a card | banish that card from the run and deal another in its place |
+| Level up | **X** | unlearn a spell (**1–7** or click it): frees its slot and refunds its picks; **X** / **Esc** goes back |
 | Paused | **Esc** | resume |
 | Game over | **Enter** (or **Play again**) | back to the menu |
 | Any | minimap **+ / −** / minimize | minimap zoom / collapse |

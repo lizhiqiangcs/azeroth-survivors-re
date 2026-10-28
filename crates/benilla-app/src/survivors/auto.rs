@@ -194,11 +194,8 @@ pub(super) fn drive(
                 if auto.all {
                     for key in run.class.pool {
                         if !run.abilities.iter().any(|o| o.def.key == *key) {
-                            run.abilities.push(super::Owned {
-                                def: data::ability(key),
-                                level: 1,
-                                cd: 0.5,
-                            });
+                            run.abilities
+                                .push(super::Owned::new(data::ability(key), 0.5));
                         }
                     }
                 }
@@ -247,18 +244,28 @@ pub(super) fn drive(
         let build: Vec<String> = run
             .abilities
             .iter()
-            .map(|o| format!("{}:{}", o.def.key, o.level))
+            .map(|o| {
+                let runes: Vec<&str> = o.runes.iter().map(|r| r.key).collect();
+                format!("{}:{}{:?}", o.def.key, o.level, runes)
+            })
             .chain(run.passives.iter().map(|(p, l)| format!("{}:{}", p.key, l)))
             .collect();
+        let talents: Vec<&str> = run.talents.iter().map(|t| t.key).collect();
+        let relics: Vec<&str> = run.relics.iter().map(|r| r.key).collect();
         info!(
-            "survivors auto: {:?} t={:.0}s fps={fps:.0} alive={alive} level={} hp={:.0} kills={} damage={:.0} build=[{}]",
+            "survivors auto: {:?} t={:.0}s fps={fps:.0} alive={alive} level={} hp={:.0} kills={} damage={:.0} build=[{}] talents={talents:?} relics={relics:?} res={:.0} arcane={} tools={}/{}/{}",
             phase.get(),
             run.elapsed,
             run.level,
             run.hp,
             run.kills,
             run.damage_done,
-            build.join(" ")
+            build.join(" "),
+            run.b.res,
+            run.b.arcane,
+            run.rerolls,
+            run.banishes,
+            run.forgets,
         );
     }
 

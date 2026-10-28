@@ -397,19 +397,54 @@ pub(super) fn place_camera(
     }
 }
 
+/// The most of the hero's health one blow can take.
+pub(super) const MAX_BLOW: f32 = 0.34;
+
 /// Damage the hero takes from one blow, after immunity, armour and the shield; returns what got
 /// through.
 pub(super) fn hurt_hero(run: &mut Run, raw: f32) -> f32 {
     if run.immune_t > 0.0 || run.dead_t.is_some() {
         return 0.0;
     }
-    let mut dmg = (raw - run.stats().armor).max(1.0);
+    let stats = run.stats();
+    let mut dmg = (raw * stats.taken - stats.armor).max(1.0);
+    if run.b.stone_t > 0.0 {
+        dmg *= 0.5;
+    }
+    // No blow takes more than a third of the hero: from full health a death is three blows at
+    // least, time enough to see it coming and press a guard or a move.
+    dmg = dmg.min(stats.max_hp * MAX_BLOW);
     if run.shield_t > 0.0 && run.shield > 0.0 {
         let absorbed = dmg.min(run.shield);
         run.shield -= absorbed;
         dmg -= absorbed;
     }
     run.hp -= dmg;
+    run.b.struck = true;
+    // Rage: blows taken feed it.
+    if run.class.id == 1 && run.b.surge_t <= 0.0 {
+        let mut gain = if run.has_talent("unbridled_wrath") {
+            8.0
+        } else {
+            4.0
+        };
+        if run.has_talent("anticipation") {
+            gain *= 1.5;
+        }
+        run.b.res = (run.b.res + gain).min(100.0);
+        run.b.res_t = 0.0;
+    }
+    let frac = run.hp / stats.max_hp;
+    if run.hp > 0.0 && frac < 0.35 && run.race == 3 && run.b.stone_cd <= 0.0 {
+        run.b.stone_t = 8.0;
+        run.b.stone_cd = 60.0;
+        run.banner = Some(("Stoneform!".into(), 2.0));
+    }
+    if run.hp > 0.0 && frac < 0.3 && run.has_relic("lifegiving") && run.b.lifegiving_cd <= 0.0 {
+        run.b.lifegiving_cd = 90.0;
+        run.hp = (run.hp + stats.max_hp * 0.4).min(stats.max_hp);
+        run.banner = Some(("Gift of Life!".into(), 2.0));
+    }
     dmg
 }
 
@@ -468,6 +503,20 @@ pub(super) fn hero_vitals(
     if run.passives.iter().any(|(p, _)| p.key == "renew") {
         shown.push(139);
     }
+    // The build's surges wear their spells' visuals too.
+    let b = &run.b;
+    for (on, spell) in [
+        (b.stone_t > 0.0, 20594),
+        (b.fury_t > 0.0, 20572),
+        (b.ephemeral_t > 0.0, 23271),
+        (b.surge_t > 0.0 && run.class.id == 1, 1719),
+        (b.surge_t > 0.0 && run.class.id == 3, 3045),
+        (b.lunar_t > 0.0 || b.solar_t > 0.0, 24907),
+    ] {
+        if on {
+            shown.push(spell);
+        }
+    }
     marks.set(&shown);
     marks.flush(entity, guid.0, &mut store, &mut fields);
 
@@ -525,7 +574,9 @@ mod tests {
     }
 
     fn left_held(world: &World) -> bool {
-        world.resource::<ButtonInput<MouseButton>>().pressed(MouseButton::Left)
+        world
+            .resource::<ButtonInput<MouseButton>>()
+            .pressed(MouseButton::Left)
     }
 
     #[test]
@@ -533,10 +584,16 @@ mod tests {
         let mut world = held_left();
         world.run_system_once(drop_stray_buttons).unwrap();
         assert!(left_held(&world), "nothing happened: the drag goes on");
-        world.write_message(WindowFocused { window: Entity::PLACEHOLDER, focused: true });
+        world.write_message(WindowFocused {
+            window: Entity::PLACEHOLDER,
+            focused: true,
+        });
         world.run_system_once(drop_stray_buttons).unwrap();
         assert!(left_held(&world), "gaining focus is no release");
-        world.write_message(WindowFocused { window: Entity::PLACEHOLDER, focused: false });
+        world.write_message(WindowFocused {
+            window: Entity::PLACEHOLDER,
+            focused: false,
+        });
         world.run_system_once(drop_stray_buttons).unwrap();
         assert!(!left_held(&world));
     }
@@ -544,7 +601,9 @@ mod tests {
     #[test]
     fn a_held_button_is_dropped_when_the_pointer_leaves_the_page() {
         let mut world = held_left();
-        world.write_message(CursorLeft { window: Entity::PLACEHOLDER });
+        world.write_message(CursorLeft {
+            window: Entity::PLACEHOLDER,
+        });
         world.run_system_once(drop_stray_buttons).unwrap();
         assert!(!left_held(&world));
     }

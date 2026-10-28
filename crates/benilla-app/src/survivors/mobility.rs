@@ -3,6 +3,7 @@
 
 use bevy::prelude::*;
 
+use super::data::Effect;
 use super::enemies::Enemy;
 use super::hero::{self, Hero};
 use super::units::{flat, Fx};
@@ -24,6 +25,9 @@ pub(super) enum Move {
     Vanish(f32),
     /// Haste, and every enemy within this many yards flees in fear.
     Scatter(f32),
+    /// Haste of 30%, and every enemy (bosses but stuns and roots) within this many yards takes
+    /// the effect.
+    Ward(f32, Effect),
 }
 
 pub(super) struct Mobility {
@@ -152,8 +156,12 @@ pub(super) struct MobilityState {
 }
 
 impl Run {
-    /// The class's mobility once the hero is level enough.
+    /// The specialization's move once specialized; before that, the class's once the hero is
+    /// level enough.
     pub(super) fn mobility(&self) -> Option<&'static Mobility> {
+        if let Some(kit) = self.kit() {
+            return Some(&kit.mobility);
+        }
         (self.level >= LEARN_LEVEL)
             .then(|| for_class(self.class.id))
             .flatten()
@@ -273,6 +281,33 @@ pub(super) fn cast_mobility(
                 }
             }
         }
+        Move::Ward(r, effect) => {
+            fx.cast(me, def.spell, &[me], None);
+            run.mobile.haste = 1.3;
+            run.mobile.haste_t = def.secs;
+            for (_, t, mut en) in &mut enemies {
+                if !en.dead && hero::reach(pos, t.translation) <= r {
+                    ward(&mut en, effect);
+                }
+            }
+        }
     }
-    run.mobile.cd = def.cooldown;
+    // Gnomes slip free sooner.
+    run.mobile.cd = def.cooldown * if run.race == 7 { 0.75 } else { 1.0 };
+}
+
+/// A ward's effect on one enemy; bosses shrug off fear and slows, and stuns and roots hold them a
+/// third as long.
+pub(super) fn ward(en: &mut Enemy, effect: Effect) {
+    let boss = if en.boss { 0.3 } else { 1.0 };
+    match effect {
+        Effect::Slow(m, t) if !en.boss => {
+            en.slow = en.slow.min(m);
+            en.slow_t = en.slow_t.max(t);
+        }
+        Effect::Root(t) => en.root_t = en.root_t.max(t * boss),
+        Effect::Stun(t) => en.stun_t = en.stun_t.max(t * boss),
+        Effect::Fear(t) if !en.boss => en.fear_t = en.fear_t.max(t),
+        _ => {}
+    }
 }

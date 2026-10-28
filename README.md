@@ -46,6 +46,16 @@ minutes. **No server, no login, no account** — fully offline and self-containe
 - **A camera you can free:** locked top-down by default with the hero facing the cursor. **C**
   unlocks it to swing and tilt, and the wheel zooms from over the shoulder out to 70 yards.
 - A light sharpen-and-colour pass over the picture (**G** toggles it).
+- **A build layer with synergies** ([docs/ROGUELIKE_DESIGN.md](docs/ROGUELIKE_DESIGN.md)):
+  three talent trees per class, where the first talent picks your specialization (a Shadow priest
+  trades Smite for Shadow Word: Pain) and a full tree teaches its deep spell (Mortal Strike,
+  Mind Flay, Stormstrike…); combinations, where two mastered spells, or a mastered spell and a
+  legendary, join into a new one (Blizzard + Flamestrike → Meteor, Sulfuras + any Fire spell →
+  Wrath of Ragnaros); every damage type leaves a classic debuff (Winter's Chill, Ignite, Shock,
+  Shadow Weaving, Judgement, Sunder Armor, Arcane Charges) so any two spells feed each other;
+  enchants that change how a spell works (Windfury, Seed of Corruption, Icy Chill…); hybrid
+  talents; raid loot from elites and bosses, some cursed, two that forge into Thunderfury and
+  Sulfuras; racial traits; a resource per class; and reroll, banish and unlearn at level up.
 
 ## Play it
 
