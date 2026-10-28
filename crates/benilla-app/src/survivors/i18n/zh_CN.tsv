@@ -1,0 +1,1194 @@
+# English → 简体中文, keyed by the exact English text the game shows. `{}` stands for a
+# value, filled in order; `{0}`, `{1}`… in the Chinese take them by position instead. A
+# line `@key<TAB>…` names a spell by its ability key. scripts/i18n-extract.py lists what
+# is missing.
+{} is slain!	{}被击杀了！
+The elite {} is slain!	精英{}被击杀了！
+Recklessness	鲁莽
+For 10 sec every strike is a critical strike: Deep Wounds bleeds and Flurry quickens on every blow. 15% more damage.	10 秒内每次攻击必定暴击：每一击都触发重伤流血并加快乱舞。伤害提高 15%。
+Retaliation	反击风暴
+For 10 sec every blow against you is struck back, and you take 25% less damage.	10 秒内每次你受到攻击都会反击，且受到的伤害降低 25%。
+Charge	冲锋
+Charge the enemy nearest the cursor within 25 yards, stunning it.	冲向光标附近 25 码内最近的敌人，并将其击晕。
+Death Wish	死亡之愿
+Rage fills at once: you Enrage on the spot. For 15 sec you deal 25% more damage, and take 15% more.	怒气瞬间充满：立刻进入激怒。15 秒内你造成的伤害提高 25%，受到的伤害提高 15%。
+Berserker Rage	狂暴之怒
+For 8 sec you heal 4% of your health every second and take 15% less damage.	8 秒内每秒恢复 4% 生命值，受到的伤害降低 15%。
+Intercept	拦截
+Intercept the enemy nearest the cursor within 25 yards, stunning it for 3 sec.	拦截光标附近 25 码内最近的敌人，将其击晕 3 秒。
+Concussion Blow	震荡猛击
+Every enemy within 10 yards takes damage for each stack of Sunder Armor on it, and is stunned for 2 sec.	10 码内的每个敌人身上每层破甲都会让它受到一次伤害，并被击晕 2 秒。
+Shield Wall	盾墙
+For 10 sec you take 70% less damage.	10 秒内受到的伤害降低 70%。
+Piercing Howl	刺耳怒吼
+Every enemy within 12 yards is slowed by 60% for 5 sec; you run 30% faster for 4 sec.	12 码内所有敌人减速 60%，持续 5 秒；你的移动速度提高 30%，持续 4 秒。
+Divine Favor	神恩术
+Every judged enemy within 20 yards is struck by holy light, each one healing you 1%. For 8 sec every cast is a critical strike.	20 码内每个被审判的敌人都会遭到圣光打击，每个为你恢复 1% 生命值。8 秒内每次施法必定暴击。
+Blessing of Protection	保护祝福
+Nothing can harm you for 5 sec.	5 秒内没有任何东西能伤害你。
+Blessing of Freedom	自由祝福
+Nothing can hold you: run 60% faster for 5 sec.	不受任何束缚：移动速度提高 60%，持续 5 秒。
+Righteous Fury	正义之怒
+Holy Power fills at once and holds for 15 sec. A burst of holy fire stuns everything within 10 yards; you take 20% less damage.	神圣能量瞬间充满并保持 15 秒。一股神圣之火击晕 10 码内的一切；你受到的伤害降低 20%。
+Blessing of Sanctuary	庇护祝福
+For 12 sec you take 40% less damage, and every blow against you is answered with holy damage.	12 秒内受到的伤害降低 40%，每次你受到攻击都会以神圣伤害回敬。
+Summon Warhorse	召唤战马
+Mount up: run 70% faster for 5 sec.	上马：移动速度提高 70%，持续 5 秒。
+Seal of the Crusader	十字军圣印
+Holy Power fills at once and holds for 15 sec: its haste runs at full. 30% more damage for 15 sec.	神圣能量瞬间充满并保持 15 秒：急速全额生效。15 秒内伤害提高 30%。
+Divine Protection	圣佑术
+For 8 sec you take 50% less damage.	8 秒内受到的伤害降低 50%。
+Summon Charger	召唤军马
+Your epic mount: run 90% faster for 4 sec.	你的史诗坐骑：移动速度提高 90%，持续 4 秒。
+Intimidation	胁迫
+Your pet's roar stuns everything within 12 yards for 2 sec. For 12 sec you deal 25% more damage, 20% faster.	你的宠物发出咆哮，击晕 12 码内的一切 2 秒。12 秒内你造成的伤害提高 25%，攻击速度提高 20%。
+Aspect of the Monkey	灵猴守护
+For 12 sec you dodge 30% more blows.	12 秒内躲闪攻击的几率提高 30%。
+Aspect of the Cheetah	猎豹守护
+Run 70% faster for 5 sec.	移动速度提高 70%，持续 5 秒。
+Rapid Fire	急速射击
+Rapid Fire for 15 sec (40% faster shots), and your Hunter's Mark falls on every enemy within 30 yards while it lasts.	急速射击持续 15 秒（射速提高 40%），期间你的猎人印记会落在 30 码内的每个敌人身上。
+Feign Death	假死
+Play dead: nothing harms you for 3 sec.	装死：3 秒内没有任何东西能伤害你。
+Disengage	逃脱
+Leap 15 yards toward the cursor.	朝光标方向跃出 15 码。
+Readiness	准备就绪
+Every spell is ready again at once, and every sting within 25 yards deals all its remaining damage at once.	所有法术立刻冷却完毕，25 码内的每个钉刺立刻造成全部剩余伤害。
+Deterrence	威慑
+For 8 sec you dodge 50% more blows and take 30% less from the rest.	8 秒内躲闪攻击的几率提高 50%，其余攻击的伤害降低 30%。
+Scatter Shot	驱散射击
+Everything within 8 yards is stunned for 2.5 sec; you run 30% faster for 3 sec.	8 码内的一切被击晕 2.5 秒；你的移动速度提高 30%，持续 3 秒。
+Cold Blood	冷血
+Five combo points at once: your next strike is a finisher. For 8 sec every strike is a critical strike.	立刻获得五个连击点：你的下一击是终结技。8 秒内每次攻击必定暴击。
+Feint	佯攻
+For 6 sec you take 50% less damage.	6 秒内受到的伤害降低 50%。
+Sprint	疾跑
+Run 80% faster for 4 sec.	移动速度提高 80%，持续 4 秒。
+Preparation	伺机待发
+Every spell is ready again, five combo points at once, and for 10 sec you strike 35% faster.	所有法术立刻冷却完毕，立刻获得五个连击点，10 秒内攻击速度提高 35%。
+Evasion	闪避
+For 10 sec you dodge 50% more blows.	10 秒内躲闪攻击的几率提高 50%。
+Distract	扰乱
+Everything within 12 yards turns away for 3 sec; you run 30% faster.	12 码内的一切转身离开 3 秒；你的移动速度提高 30%。
+Premeditation	预谋
+Five combo points at once, and for 10 sec you deal 35% more damage.	立刻获得五个连击点，10 秒内造成的伤害提高 35%。
+Vanish	消失
+Vanish: nothing harms you for 3 sec.	消失：3 秒内没有任何东西能伤害你。
+Run 70% faster for 4 sec, and the horde loses sight of you.	移动速度提高 70%，持续 4 秒，怪群会丢失你的踪迹。
+Power Infusion	能量灌注
+For 15 sec you cast 40% faster and deal 20% more damage.	15 秒内施法速度提高 40%，造成的伤害提高 20%。
+Inner Fire	心灵之火
+For 15 sec you take 40% less damage, and a shield absorbs 20% of your health.	15 秒内受到的伤害降低 40%，并获得一个吸收 20% 生命值伤害的护盾。
+Levitate	漂浮术
+Float 50% faster for 6 sec.	漂浮移动，速度提高 50%，持续 6 秒。
+Inner Focus	心灵专注
+For 8 sec every spell is a critical strike: holy crits burn with Holy Fire and heal you through Atonement.	8 秒内每个法术必定暴击：神圣暴击会燃起神圣之火，并通过赎罪为你治疗。
+Desperate Prayer	绝望祷言
+Heal 40% of your health at once.	立刻恢复 40% 生命值。
+Fade	渐隐术
+Fade from the horde's sight: enemies lose you and you run 40% faster for 4 sec.	从怪群视线中隐去：敌人丢失你的踪迹，你的移动速度提高 40%，持续 4 秒。
+Shadowform	暗影形态
+For 15 sec your damage over time does 60% more, and all your damage 20% more: every affliction stacks Shadow Weaving faster.	15 秒内持续伤害提高 60%，所有伤害提高 20%：每个痛苦效果叠加暗影之波更快。
+Vampiric Embrace	吸血鬼的拥抱
+For 10 sec you heal for 12% of all the damage you deal.	10 秒内你造成的所有伤害的 12% 转化为治疗。
+Mind Soothe	安抚心灵
+Everything within 10 yards loses interest for 3 sec; you run 30% faster.	10 码内的一切失去兴趣 3 秒；你的移动速度提高 30%。
+Elemental Mastery	元素掌握
+For 10 sec every spell Overloads: it casts twice.	10 秒内每个法术都会过载：施放两次。
+Stoneskin Totem	石肤图腾
+For 12 sec you take 40% less damage.	12 秒内受到的伤害降低 40%。
+Ghost Wolf	幽魂之狼
+Take the form of a ghost wolf, running 60% faster for 6 sec.	化身幽魂之狼，移动速度提高 60%，持续 6 秒。
+Windfury Totem	风怒图腾
+For 12 sec you strike 50% faster and deal 15% more damage.	12 秒内攻击速度提高 50%，造成的伤害提高 15%。
+Grounding Totem	根基图腾
+For 6 sec you take 50% less damage and blows against you are struck back with lightning.	6 秒内受到的伤害降低 50%，攻击你的敌人会遭到闪电反击。
+Take the form of a ghost wolf, running 80% faster for 5 sec.	化身幽魂之狼，移动速度提高 80%，持续 5 秒。
+Mana Tide Totem	法力之潮图腾
+Your spells are nearly ready again, and for 12 sec you cast 30% faster.	你的法术几乎全部冷却完毕，12 秒内施法速度提高 30%。
+Healing Stream Totem	治疗之泉图腾
+For 10 sec you heal 4% of your health every second.	10 秒内每秒恢复 4% 生命值。
+Earthbind Totem	地缚图腾
+Everything within 12 yards is held fast for 3 sec; you run 30% faster.	12 码内的一切被定身 3 秒；你的移动速度提高 30%。
+Evocation	唤醒
+Arcane charges fill at once and every spell is ready again; 10% more damage for 12 sec.	奥术充能瞬间充满，所有法术立刻冷却完毕；12 秒内伤害提高 10%。
+Mana Shield	法力护盾
+A shield absorbs damage up to 40% of your health.	一个护盾吸收最多相当于 40% 生命值的伤害。
+Blink	闪现术
+Teleport 22 yards toward the cursor.	朝光标方向传送 22 码。
+Combustion	燃烧
+Every Ignite within 25 yards bursts: four times its remaining burn, all at once. 50% more critical strike chance for 10 sec.	25 码内的每个点燃爆发：一次性造成剩余燃烧伤害的四倍。10 秒内暴击几率提高 50%。
+Fire Ward	防护火焰结界
+For 10 sec you take 35% less damage, and blows against you burn the attacker.	10 秒内受到的伤害降低 35%，攻击你的敌人会被灼烧。
+Teleport 18 yards toward the cursor.	朝光标方向传送 18 码。
+Cold Snap	急速冷却
+Everything within 15 yards freezes solid, ready to Shatter, and every spell is ready again.	15 码内的一切被冻结，可被碎冰；所有法术立刻冷却完毕。
+Ice Block	寒冰屏障
+Encased in ice for 5 sec: nothing harms you, and you heal 5% a second.	被冰封 5 秒：没有任何东西能伤害你，每秒恢复 5% 生命值。
+Drain Soul	吸取灵魂
+Every DoT within 25 yards deals all its remaining damage at once: the afflicted dead feed your soul shards.	25 码内每个持续伤害效果立刻造成全部剩余伤害：被折磨致死的敌人为你提供灵魂碎片。
+Shadow Ward	防护暗影结界
+A shield absorbs damage up to 35% of your health.	一个护盾吸收最多相当于 35% 生命值的伤害。
+Curse of Exhaustion	疲劳诅咒
+Everything within 15 yards is slowed by half for 5 sec; you run 30% faster.	15 码内的一切减速一半，持续 5 秒；你的移动速度提高 30%。
+Demonic Sacrifice	恶魔牺牲
+Five soul shards at once: Soul Fire hurls itself at the toughest enemy. 25% more damage for 12 sec.	立刻获得五个灵魂碎片：灵魂之火自动射向最强的敌人。12 秒内伤害提高 25%。
+Soul Link	灵魂链接
+Your demon shares the pain: for 15 sec you take 30% less damage and heal 1.5% a second.	你的恶魔分担痛苦：15 秒内受到的伤害降低 30%，每秒恢复 1.5% 生命值。
+Summon Felsteed	召唤地狱战马
+Mount your felsteed: run 70% faster for 5 sec.	骑上地狱战马：移动速度提高 70%，持续 5 秒。
+Shadowburn	暗影灼烧
+Five soul shards at once (Soul Fire), every burn within 20 yards flares out for twice its remaining damage, and for 8 sec every spell crits.	立刻获得五个灵魂碎片（灵魂之火），20 码内每个燃烧效果爆发，造成两倍剩余伤害；8 秒内每个法术必定暴击。
+Demon Armor	魔甲术
+For 15 sec you take 25% less damage and heal 2% a second.	15 秒内受到的伤害降低 25%，每秒恢复 2% 生命值。
+Fear	恐惧术
+Everything within 8 yards flees in fear for 4 sec; you run 30% faster.	8 码内的一切恐惧逃跑 4 秒；你的移动速度提高 30%。
+Nature's Grace	自然之赐
+Both eclipses at once for 12 sec: Arcane and Nature both empowered.	两种日月蚀同时生效 12 秒：奥术和自然同时强化。
+Barkskin	树皮术
+For 12 sec you take 50% less damage.	12 秒内受到的伤害降低 50%。
+Travel Form	旅行形态
+Run 70% faster for 6 sec.	移动速度提高 70%，持续 6 秒。
+Tiger's Fury	猛虎之怒
+Your spells are halfway ready again, and for 10 sec you deal 30% more damage, 30% faster.	你的法术冷却恢复一半，10 秒内造成的伤害提高 30%，速度提高 30%。
+Frenzied Regeneration	狂暴回复
+For 8 sec you heal 5% of your health every second.	8 秒内每秒恢复 5% 生命值。
+Dash	急奔
+Innervate	激活
+Every spell is ready again, and for 12 sec you cast 35% faster.	所有法术立刻冷却完毕，12 秒内施法速度提高 35%。
+Regrowth	愈合
+Heal 30% of your health at once, and 2% a second for 10 sec.	立刻恢复 30% 生命值，并在 10 秒内每秒恢复 2%。
+Nature's Grasp	自然之握
+Everything within 10 yards is rooted for 3 sec; you run 30% faster.	10 码内的一切被缠绕 3 秒；你的移动速度提高 30%。
+Common	普通
+Uncommon	优秀
+Rare	精良
+Epic	史诗
+Legendary	传说
+Pick a card to strike it from this run.  B: cancel	选一张卡，在本局中将其放逐。  B：取消
+CHOOSE YOUR SPECIALIZATION	选择你的专精
+Pick a talent tree. It shapes your starting spell and the spells you learn later.	选一个天赋树。它决定你的起始法术和之后学会的法术。
+LEVEL UP	升级
+Level {}: choose your power	{} 级：选择你的力量
+BOSS LOOT	首领战利品
+Need before greed: take one item	需求优先：拿走一件物品
+Unlearn a spell to free its slot and win back its picks.  X: back	遗忘一个法术以腾出栏位，并返还它的选择次数。  X：返回
+Press 1-{} or click a spell	按 1-{} 或点击一个法术
+1, 2, 3 or click     R  Reroll ({})     B  Banish ({})	1、2、3 或点击     R  重抽（{}）     B  放逐（{}）
+1, 2, 3 or click     R  Reroll ({})     B  Banish ({})     X  Unlearn ({})	1、2、3 或点击     R  重抽（{}）     B  放逐（{}）     X  遗忘（{}）
+Blessing of Might	力量祝福
+Power Word: Fortitude	真言术：韧
+Aspect of the Pack	豹群守护
+Renew	恢复
+Arcane Intellect	奥术智慧
+Amplify Magic	魔法增效
+Detect Lesser Invisibility	侦测次级隐形
+Blessing of Wisdom	智慧祝福
+Mark of the Wild	野性印记
+Blessing of Kings	王者祝福
+Warrior	战士
+Paladin	圣骑士
+Hunter	猎人
+Rogue	潜行者
+Priest	牧师
+Shaman	萨满祭司
+Mage	法师
+Warlock	术士
+Druid	德鲁伊
+Fleeting Plainstrider	迅捷平原陆行鸟
+Zhevra Runner	斑马奔跑者
+Razormane Quilboar	钢鬃野猪人
+Razormane Hunter	钢鬃猎手
+Savannah Huntress	草原女猎手
+Sunscale Lashtail	阳鳞鞭尾龙
+Kolkar Wrangler	科卡尔牧马人
+Kolkar Stormer	科卡尔风暴召唤者
+Witchwing Harpy	巫翼鹰身人
+Hecklefang Hyena	乱齿土狼
+Razormane Defender	钢鬃防御者
+Razormane Mystic	钢鬃秘法师
+Sunscale Screecher	阳鳞尖啸者
+Kolkar Bloodcharger	科卡尔血骑士
+Savannah Prowler	草原潜伏者
+Thunderhawk Hatchling	雷鹰幼崽
+Witchwing Slayer	巫翼杀手
+Bristleback Geomancer	鬃刺地占师
+Stormsnout	风暴之鼻
+Barrens Kodo	贫瘠之地科多兽
+Sunscale Scytheclaw	阳鳞镰爪龙
+Thunderhead	雷头
+Silithid Swarmer	异种虫群
+Greater Thunderhawk	巨型雷鹰
+Hecklefang Stalker	乱齿追踪者
+Kolkar Destroyer	科卡尔毁灭者
+Kolkar Mauler	科卡尔重殴者
+Greater Barrens Kodo	巨型贫瘠之地科多兽
+Elder Thunder Lizard	雷霆蜥蜴长老
+Silithid Protector	异种保卫者
+Echeyakee	埃谢亚基
+Takk the Leaper	跳跃者塔克
+Lakota'mani	拉克塔曼尼
+Humar the Pridelord	狮王休玛
+Agathelos the Raging	狂怒的阿加瑟洛斯
+Hezrul Bloodmark	赫兹鲁尔·血印
+The Barrens	贫瘠之地
+Kalimdor	卡利姆多
+The Barrens are yours.	贫瘠之地归你了。
+The Dark Portal	黑暗之门
+Blasted Lands	诅咒之地
+The Dark Portal stands silent.	黑暗之门归于沉寂。
+Starving Snickerfang	饥饿的窃笑土狼
+Snickerfang Hyena	窃笑土狼
+Black Slayer	黑色杀戮者
+Redstone Crystalhide	红石晶甲虫
+Shadowsworn Cultist	暗誓信徒
+Felbeast	地狱野兽
+Dreadmaul Mauler	恐锤重殴者
+Felhound	地狱猎犬
+Felguard Sentry	恶魔卫士哨兵
+Manahound	法力猎犬
+Lesser Infernal	小型地狱火
+Felguard Elite	恶魔卫士精英
+Doomguard Commander	末日守卫指挥官
+Akubar the Seer	先知阿库巴尔
+Lord Azrethoc	阿兹雷索克领主
+Lord Hel'nurath	赫尔努拉斯领主
+Teremus the Devourer	吞噬者特雷姆斯
+Lord Banehollow	巴内霍尔领主
+Lord Kazzak	卡扎克领主
+Gates of Ahn'Qiraj	安其拉之门
+Silithus	希利苏斯
+The Qiraji retreat behind the Scarab Wall.	其拉虫人退回了甲虫之墙后。
+Sand Skitterer	沙地爬行者
+Stonelash Scorpid	石鞭蝎子
+Dredge Striker	挖掘者突袭者
+Twilight Avenger	暮光复仇者
+Hive'Ashi Drone	阿什虫巢雄蜂
+Stonelash Flayer	石鞭剥皮者
+Hive'Ashi Defender	阿什虫巢防御者
+Dust Stormer	尘暴者
+Twilight Stonecaller	暮光召石者
+Hive'Zora Wasp	佐拉虫巢黄蜂
+Hive'Zora Reaver	佐拉虫巢掠夺者
+Hive'Regal Ambusher	雷戈虫巢伏击者
+Vekniss Wasp	维克尼斯黄蜂
+Qiraji Gladiator	其拉角斗士
+Vekniss Warrior	维克尼斯战士
+Obsidian Destroyer	黑曜石毁灭者
+Qiraji Champion	其拉勇士
+Anubisath Sentinel	阿努比萨斯哨兵
+Kurinnaxx	库林纳克斯
+General Rajaxx	拉贾克斯将军
+Moam	莫阿姆
+Buru the Gorger	吞咽者布鲁
+Princess Huhuran	哈霍兰公主
+Ossirian the Unscarred	无疤者奥斯里安
+Fire Plume Ridge	火羽山
+Un'Goro Crater	安戈洛环形山
+Even King Mosh has fallen.	连莫什王都倒下了。
+Bloodpetal Lasher	血瓣鞭笞者
+Young Diemetradon	幼年双帆龙
+Ravasaur	暴掠龙
+Muculent Ooze	粘性软泥怪
+Ravasaur Hunter	暴掠龙猎手
+Tar Beast	焦油兽
+Bloodpetal Flayer	血瓣剥皮者
+Primal Ooze	原始软泥怪
+Gorishi Wasp	格里什黄蜂
+Pterrordax	翼手龙
+Diemetradon	双帆龙
+Glutinous Ooze	胶质软泥怪
+Tar Lurker	焦油潜伏者
+Scorching Elemental	灼热元素
+Frenzied Pterrordax	狂乱的翼手龙
+Elder Diemetradon	年长的双帆龙
+Stegodon	剑龙
+Stone Guardian	岩石守卫
+Plated Stegodon	铁甲剑龙
+Devilsaur	魔暴龙
+Ravasaur Matriarch	暴掠龙女王
+Uhk'loc	乌克洛克
+Blazerunner	火焰奔行者
+Baron Charr	查尔男爵
+Tyrant Devilsaur	暴君魔暴龙
+King Mosh	莫什王
+Gurubashi Arena	古拉巴什竞技场
+Stranglethorn Vale	荆棘谷
+The arena roars your name.	竞技场在高呼你的名字。
+Shadowmaw Panther	影牙豹
+Cold Eye Basilisk	冷眼蜥蜴
+Jungle Stalker	丛林潜伏者
+Elder Mistvale Gorilla	年长的雾谷猩猩
+Zanzil Zombie	赞吉尔僵尸
+Thrashtail Basilisk	鞭尾蜥蜴
+Bloodsail Sea Dog	血帆海盗
+Gurubashi Axe Thrower	古拉巴什掷斧者
+Razzashi Serpent	拉扎什毒蛇
+Zulian Panther	祖利安猎豹
+Gurubashi Headhunter	古拉巴什猎头者
+Bloodseeker Bat	嗜血蝙蝠
+Razzashi Raptor	拉扎什迅猛龙
+Gurubashi Blood Drinker	古拉巴什饮血者
+Zulian Tiger	祖利安猛虎
+Hakkari Shadowcaster	哈卡莱暗影法师
+Gurubashi Champion	古拉巴什勇士
+Gurubashi Bat Rider	古拉巴什蝙蝠骑士
+Gurubashi Berserker	古拉巴什狂战士
+King Bangalash	邦加拉什国王
+Mokk the Savage	野蛮的莫克
+Bloodlord Mandokir	血领主曼多基尔
+High Priest Thekal	高阶祭司塞卡尔
+Jin'do the Hexxer	妖术师金度
+Hakkar	哈卡
+Elwynn Forest	艾尔文森林
+Eastern Kingdoms	东部王国
+Elwynn Forest is safe once more.	艾尔文森林再次安全了。
+Young Wolf	小狼
+Timber Wolf	森林狼
+Defias Thug	迪菲亚暴徒
+Mangy Wolf	癞皮狼
+Stonetusk Boar	石牙野猪
+Kobold Tunneler	狗头人隧道工
+Defias Cutpurse	迪菲亚扒手
+Forest Spider	森林蜘蛛
+Murloc	鱼人
+Kobold Miner	狗头人矿工
+Murloc Streamrunner	鱼人逐流者
+Rockhide Boar	石皮野猪
+Gray Forest Wolf	灰色森林狼
+Defias Bandit	迪菲亚强盗
+Young Forest Bear	小森林熊
+Defias Rogue Wizard	迪菲亚流氓巫师
+Mother Fang	母狼
+Narg the Taskmaster	工头纳格
+Hogger	霍格
+Thuros Lightfingers	光指图罗斯
+Fedfennel	菲德芬尼尔
+Gruff Swiftbite	格鲁夫·快咬
+Durotar	杜隆塔尔
+Durotar is quiet again.	杜隆塔尔重归宁静。
+Vile Familiar	邪恶的小鬼
+Felstalker	地狱猎手
+Clattering Scorpid	碎石蝎子
+Pygmy Surf Crawler	侏儒海浪爬行者
+Dire Mottled Boar	斑纹野猪
+Armored Scorpid	装甲蝎子
+Bloodtalon Taillasher	血爪迅猛龙
+Razormane Scout	钢鬃斥候
+Dustwind Harpy	尘风鹰身人
+Dustwind Pillager	尘风掠夺者
+Razormane Dustrunner	钢鬃尘行者
+Elder Mottled Boar	年长的斑纹野猪
+Razormane Battleguard	钢鬃战斗守卫
+Burning Blade Neophyte	燃刃新兵
+Burning Blade Cultist	燃刃信徒
+Geolord Mottle	地卜师莫特尔
+Death Flayer	死亡剥皮者
+Teldrassil	泰达希尔
+Teldrassil blooms again.	泰达希尔再度繁花盛开。
+Young Nightsaber	小夜刃豹
+Young Thistle Boar	小刺背野猪
+Grell	格雷尔
+Grellkin	小格雷尔
+Nightsaber	夜刃豹
+Strigid Owl	猫头鹰
+Webwood Lurker	林木潜伏者
+Timberling	小树人
+Gnarlpine Gardener	瘤背园丁
+Gnarlpine Warrior	瘤背战士
+Gnarlpine Ambusher	瘤背伏击者
+Vicious Grell	凶恶的格雷尔
+Gnarlpine Defender	瘤背防御者
+Gnarlpine Shaman	瘤背萨满祭司
+Timberling Bark Ripper	剥树皮的小树人
+Gnarlpine Augur	瘤背占卜者
+Threggil	瑟雷基尔
+Uruson	乌鲁森
+Duskstalker	暮色潜行者
+Oakenscowl	橡怒
+Dun Morogh	丹莫罗
+Dun Morogh thaws in your wake.	丹莫罗在你身后解冻了。
+Crag Boar	岩石野猪
+Young Black Bear	小黑熊
+Juvenile Snow Leopard	幼年雪豹
+Young Wendigo	幼年雪怪
+Wendigo	雪怪
+Large Crag Boar	大型岩石野猪
+Snow Tracker Wolf	雪地追踪狼
+Snow Leopard	雪豹
+Elder Crag Boar	年长的岩石野猪
+Winter Wolf	冬狼
+Ice Claw Bear	冰爪熊
+Frostmane Seer	霜鬃先知
+Frostmane Snowstrider	霜鬃踏雪者
+Edan the Howler	嚎叫者艾丹
+Timber	提姆尔
+Great Father Arctikus	大父阿克提库斯
+Old Icebeard	老冰须
+Vagash	瓦加什
+Bjarn	比约恩
+Mulgore	莫高雷
+Mulgore's herds roam free.	莫高雷的兽群自由漫步。
+Plainstrider	平原陆行鸟
+Battleboar	战斗野猪
+Prairie Wolf	草原狼
+Palemane Tanner	白鬃制皮匠
+Venture Co. Hireling	风险投资公司雇工
+Adult Plainstrider	成年平原陆行鸟
+Wiry Swoop	精壮的猛禽
+Venture Co. Laborer	风险投资公司劳工
+Palemane Skinner	白鬃剥皮者
+Prairie Stalker	草原潜行者
+Flatland Cougar	平原美洲狮
+Palemane Poacher	白鬃偷猎者
+Venture Co. Taskmaster	风险投资公司工头
+Swoop	猛禽
+Elder Plainstrider	年长的平原陆行鸟
+Mazzranache	马兹拉纳奇
+Snagglespear	碎矛
+Ghost Howl	幽灵之嚎
+Tirisfal Glades	提瑞斯法林地
+Tirisfal is at peace.	提瑞斯法重获安宁。
+Decrepit Darkhound	衰老的黑暗猎犬
+Rotting Dead	腐烂的死尸
+Greater Duskbat	大型暮色蝙蝠
+Ravaged Corpse	被蹂躏的尸体
+Rot Hide Graverobber	腐皮盗墓者
+Rot Hide Gnoll	腐皮豺狼人
+Rattlecage Soldier	骷髅士兵
+Cursed Darkhound	被诅咒的黑暗猎犬
+Rot Hide Mongrel	腐皮杂种狗
+Hungering Dead	饥饿的死尸
+Scarlet Missionary	血色传教士
+Darkeye Bonecaster	黑眼骨法师
+Vampiric Duskbat	吸血暮色蝙蝠
+Scarlet Zealot	血色狂热者
+Shambling Horror	蹒跚的恐怖
+Farmer Solliden	农夫索利丹
+Tormented Spirit	痛苦的灵魂
+Bayne	贝恩
+Ressan the Needler	穿刺者雷桑
+Fellicent's Shade	费利森特的阴影
+Gorefang	血牙
+Westfall	西部荒野
+Westfall's fields are safe.	西部荒野的田野安全了。
+{} approaches!	{}来了！
+They're surrounding you! Find the gap!	它们包围了你！找到缺口！
+An elite {} guards treasure!	精英{}守护着宝藏！
+You have learned {}! Press F.	你学会了{}！按 F 施放。
+Stoneform!	石像形态！
+Gift of Life!	生命赐福！
+Level 1	等级 1
+Kills 0	击杀 0
+Choose your power	选择你的力量
+Click a card, or press 1, 2 or 3	点击一张卡，或按 1、2、3
+Paused	已暂停
+Resume	继续
+Abandon run	放弃本局
+Quit game	退出游戏
+Survived	存活
+Level	等级
+Kills	击杀
+Damage	伤害
+Bosses	首领
+Play again	再玩一局
+Forged {}!	锻造了{}！
+{} specialization	{}专精
+{} mastery: a new spell!	{}精通：新法术！
+Combination unlocked!	组合技解锁！
+Unlearned. Your training returns to you.	已遗忘。你的训练回到了你身上。
+New spell	新法术
+Damage {} » {}	伤害 {} » {}
+Cooldown {}s » {}s	冷却 {} 秒 » {} 秒
+Targets {} » {}	目标 {} » {}
+Area {} » {} yd	范围 {} » {} 码
+Lasts {}s » {}s	持续 {} 秒 » {} 秒
+Rank {} » {}	等级 {} » {}
+New talent	新天赋
+Healthstone	治疗石
+Restore	恢复
+Everything is mastered. Restores all health.	一切都已精通。恢复全部生命值。
+Enchant {}	附魔{}
+Your {} becomes {}.	你的{}变为{}。
+{} deep talent: new spell	{}深层天赋：新法术
+{}. Takes no spell slot.	{}。不占用法术栏位。
+a {} spell	{}系法术
+Combination: {}	组合技：{}
+{} Takes no spell slot.	{}不占用法术栏位。
+Unlearn  (rank {})	遗忘  （等级 {}）
+Unlearn it and its enchants, and win back {} picks.	遗忘它和它的附魔，并返还 {} 次选择。
+Unlearn it, freeing its slot.	遗忘它，腾出栏位。
+Cursed item	诅咒物品
+Rare item	稀有物品
+Epic item	史诗物品
+Legendary item	传说物品
+Cursed talent	诅咒天赋
+Hybrid talent: {} + {}	混合天赋：{} + {}
+{} talent, tier 2	{}天赋，第 2 层
+Talent	天赋
+ENRAGED {}s	激怒 {} 秒
+Rage {}	怒气 {}
+Holy Power {}	神圣能量 {}
+RAPID FIRE {}s	急速射击 {} 秒
+Hunter's Mark	猎人印记
+Combo 5/5  FINISHER READY	连击 5/5  终结技就绪
+Combo {}/5	连击 {}/5
+Overload in {}	{} 后过载
+Master of Elements: next non-{} spell +{}	元素掌握：下一个非{}法术 +{}
+Soul Shards {}/5	灵魂碎片 {}/5
+LUNAR ECLIPSE {}s	月蚀 {} 秒
+SOLAR ECLIPSE {}s	日蚀 {} 秒
+Lunar {}/5  Solar {}/5	月 {}/5  日 {}/5
+Arcane Charges {}	奥术充能 {}
+Blood Fury	血性狂暴
+Stoneform	石像形态
+Ephemeral Power	短暂强力
+Unstable Power	不稳定的力量
+Judgement of Light	圣光审判
+Flurry	乱舞
+XP {} / {}	经验 {} / {}
+Level {}	等级 {}
+Kills {}	击杀 {}
+Victory!	胜利！
+You have fallen	你倒下了
+{} {} in {}   —   press Enter to play again	{} {}，用时 {}   —   按回车再玩一局
+The horde was too much this time.	这次的怪群太强了。
+slowing them by {} for {} sec	使其减速 {}，持续 {} 秒
+freezing them in place for {} sec	将其冻结在原地 {} 秒
+stunning them for {} sec	将其击晕 {} 秒
+sending them fleeing for {} sec	使其恐惧逃跑 {} 秒
+cutting their damage by {} for {} sec	使其伤害降低 {}，持续 {} 秒
+healing you for {} of the damage	按伤害的 {} 为你治疗
+killing them outright below {} health	生命值低于 {} 时直接将其击杀
+the toughest enemy in range	范围内最强的敌人
+the {} toughest enemies in range	范围内最强的 {} 个敌人
+the closest enemy	最近的敌人
+the {} closest enemies	最近的 {} 个敌人
+the nearest enemy	最近的敌人
+the {} nearest enemies	最近的 {} 个敌人
+{} {} for {} damage	{}{}，造成 {} 点伤害
+Strikes	攻击
+Hits	命中
+, and everything within {} yd of the hit	，并波及命中点 {} 码内的一切
+Deals {} damage to every enemy within {} yd of you	对你 {} 码内的每个敌人造成 {} 点伤害
+Deals {} damage to every enemy in a {} yd cone toward the closest	朝最近的敌人方向，对 {1} 码锥形范围内的每个敌人造成 {0} 点伤害
+around you	在你周围
+on the thickest pack	在最密集的怪群上
+Strikes a {} yd area {} for {} damage	{1}打击 {0} 码范围，造成 {2} 点伤害
+Covers a {} yd area {} for {} sec, dealing {} damage every second	{1}覆盖 {0} 码范围 {2} 秒，每秒造成 {3} 点伤害
+Strikes the nearest enemy for {} damage, then jumps to {} more within {} yd of each other, 15% weaker with every jump	攻击最近的敌人，造成 {0} 点伤害，然后跳到彼此 {2} 码内的另外 {1} 个敌人，每跳一次伤害降低 15%
+Afflicts {} enemies in range with {} damage every second for {} sec	使范围内 {0} 个敌人每秒受到 {1} 点伤害，持续 {2} 秒
+Every {} sec, deals {} damage to every enemy within {} yd of you	每 {0} 秒对你 {2} 码内的每个敌人造成 {1} 点伤害
+Every {} sec, zaps {} within {} yd of you for {} damage	每 {0} 秒电击你 {2} 码内的{1}，造成 {3} 点伤害
+an enemy	一个敌人
+{} enemies	{} 个敌人
+Absorbs the next {} damage you take within {} sec	在 {1} 秒内吸收你受到的下 {0} 点伤害
+When an enemy closes in, makes you immune to all damage for {} sec	敌人靠近时，使你对所有伤害免疫 {} 秒
+When enemies close in, deals {} damage to every attacker for {} sec	敌人靠近时，对每个攻击者造成 {} 点伤害，持续 {} 秒
+Below 85% health, heals you for {} over {} sec	生命值低于 85% 时，在 {1} 秒内为你恢复 {0} 点生命值
+Drops a totem for {} sec that burns every enemy within {} yd for {} damage every 2 sec	放下一个图腾，持续 {0} 秒，每 2 秒灼烧 {1} 码内的每个敌人，造成 {2} 点伤害
+Drops a totem for {} sec that hits the nearest enemy within {} yd for {} damage every second	放下一个图腾，持续 {0} 秒，每秒攻击 {1} 码内最近的敌人，造成 {2} 点伤害
+, then {} damage every second for {} sec	，然后在 {1} 秒内每秒造成 {0} 点伤害
+{} damage per second	每秒 {} 点伤害
+{} jumps	跳跃 {} 次
+{} targets	{} 个目标
+{} yd	{} 码
+{} sec	{} 秒
+{} sec cooldown	{} 秒冷却
+Rank {}	等级 {}
+Melee Range	近战范围
+{} yd range	{} 码射程
+Casts itself	自动施放
+Instant	瞬发
+{} damage	{} 点伤害
+{} chance to critically strike for {} damage	{} 几率暴击，造成 {} 点伤害
+An enchant slot is open.	有一个附魔栏位空着。
+Rampage: +{}	暴怒：+{}
+Next rank:	下一级：
+Highest rank	已是最高等级
+All damage	全部伤害
+Maximum health	最大生命值
+Movement speed	移动速度
+Health per second	每秒生命恢复
+Recharge speed	冷却速度
+Area size	范围大小
+Pickup range	拾取范围
+Experience gained	经验获取
+Damage blocked per hit	每次受击格挡伤害
+Critical strike chance	暴击几率
+Increases all damage you deal by {}.	你造成的所有伤害提高 {}。
+Increases your maximum health by {}.	你的最大生命值提高 {}。
+Increases your movement speed by {}.	你的移动速度提高 {}。
+Restores {} health every second.	每秒恢复 {} 点生命值。
+Your abilities recharge {} faster.	你的技能冷却加快 {}。
+Increases the size of your areas of effect by {}.	你的范围效果扩大 {}。
+Increases your pickup range by {}.	你的拾取范围扩大 {}。
+Increases the experience you gain by {}.	你获得的经验提高 {}。
+Reduces the damage of every hit you take by {}.	你受到的每次攻击伤害降低 {}。
+Increases your chance to critically strike for double damage by {}.	你造成双倍伤害暴击的几率提高 {}。
+Damage dealt: {}	造成伤害：{}
+Maximum health: {}	最大生命值：{}
+Movement speed: {} yd per second	移动速度：每秒 {} 码
+Health restored: {} per second	生命恢复：每秒 {}
+Cooldowns: {} shorter	冷却：缩短 {}
+Area of effect: {}	范围效果：{}
+Pickup range: {} yd	拾取范围：{} 码
+Experience gained: {}	经验获取：{}
+Damage blocked per hit: {}	每次受击格挡伤害：{}
+Critical strike chance: {}	暴击几率：{}
+{} racial trait	{}种族特性
+{} class trait	{}职业特性
+Burst	爆发
+Guard	减伤
+{}: press {}	{}：按 {}
+Lasts {} sec	持续 {} 秒
+Press F	按 F
+Enter World	进入世界
+Alliance	联盟
+Horde	部落
+Male	男性
+Female	女性
+Randomize	随机
+Choose a Zone	选择区域
+Level {}-{}	等级 {}-{}
+Disabled	已禁用
+Down	按下
+Up	抬起
+Charge the nearest enemy within 25 yards, stunning it.	冲向 25 码内最近的敌人，并将其击晕。
+Teleport 18 yards forward.	向前传送 18 码。
+Howl of Terror	恐惧嚎叫
+Howl, sending every enemy within 12 yards fleeing in terror for 4 sec.	发出嚎叫，使 12 码内的每个敌人恐惧逃跑 4 秒。
+Enrage!	激怒！
+Lunar Eclipse!	月蚀！
+Solar Eclipse!	日蚀！
+Blood Fury!	血性狂暴！
+Soul Fire!	灵魂之火！
+Physical	物理
+Holy	神圣
+Fire	火焰
+Nature	自然
+Frost	冰霜
+Shadow	暗影
+Arcane	奥术
+Multi-Shot	多重射击
+Killing blows split into 2 bolts at nearby enemies for 50% damage.	击杀时分裂出 2 支箭矢射向附近敌人，造成 50% 伤害。
+Sweeping Strikes	横扫攻击
++2 targets, but each hit deals 20% less.	目标 +2，但每次命中伤害降低 20%。
+Presence of Mind	气定神闲
+Every 4th cast deals triple damage and always crits.	每第 4 次施放造成三倍伤害且必定暴击。
+Execute	斩杀
+Double damage to enemies below 30% health.	对生命值低于 30% 的敌人造成双倍伤害。
+Rampage	暴怒
+Every kill with this spell adds 1% damage to it, up to 80%.	这个法术每次击杀使它的伤害提高 1%，最多 80%。
+Lifestealing	生命偷取
+Each hit heals you for 1% of your maximum health.	每次命中为你恢复 1% 最大生命值。
+Windfury	风怒
+Casts again a moment later for 60% damage.	片刻后再次施放，造成 60% 伤害。
+Aura Mastery	光环掌握
++40% area, 10% less damage.	范围 +40%，伤害降低 10%。
+Retribution Aura	惩罚光环
+The area forms on you and follows you, and lasts 25% longer.	范围效果在你身上形成并跟随你，持续时间延长 25%。
+Mirror Image	镜像术
+Places a second one at another pack.	在另一群敌人处再放置一个。
+Seed of Corruption	腐蚀之种
+When an afflicted enemy dies, its damage over time spreads to 2 nearby.	被折磨的敌人死亡时，其持续伤害扩散到附近 2 个敌人。
+Drain Life	吸取生命
+Its damage over time heals you for 20% of the damage dealt.	它的持续伤害按造成伤害的 20% 为你治疗。
+Forked Lightning	叉状闪电
++3 jumps, and the jumps no longer weaken.	跳跃 +3 次，且跳跃不再衰减。
+Reckoning	清算
+Also fires the moment you are struck (once every 2 sec).	你被击中时也会立刻施放（每 2 秒最多一次）。
+Sanctity Aura	圣洁光环
+On cast, deals 150% of its value as Holy damage to all within 8 yd.	施放时，对 8 码内的一切造成相当于其数值 150% 的神圣伤害。
+Totemic Mastery	图腾掌握
+Totems last 50% longer and attack twice as often.	图腾持续时间延长 50%，攻击频率加倍。
+Curse of the Elements	元素诅咒
+Applies its debuffs twice: double Winter's Chill, Ignite, Shock or Sunder Armor.	它的减益效果施加两次：双倍深冬之寒、点燃、震击或破甲。
+Nature's Swiftness	自然迅捷
+25% shorter cooldown, 10% less damage.	冷却缩短 25%，伤害降低 10%。
+Icy Chill	冰寒
+Adds Frost damage: applies Winter's Chill, which freezes at 5. +10% damage.	附加冰霜伤害：施加深冬之寒，叠满 5 层冻结。伤害 +10%。
+Fiery Weapon	烈焰武器
+Adds Fire damage: applies Ignite. +10% damage.	附加火焰伤害：施加点燃。伤害 +10%。
+Unholy Weapon	邪恶武器
+Adds Shadow damage: hits harder for every damage over time on the target. +10% damage.	附加暗影伤害：目标身上每个持续伤害效果都让它打得更重。伤害 +10%。
+Deadly Poison	致命毒药
+Adds Nature damage: applies Shock; at 3, Chain Lightning leaps out. +10% damage.	附加自然伤害：施加震击；叠到 3 层时迸发闪电链。伤害 +10%。
+Crusader	十字军
+Adds Holy damage: casts Judgement on what it hits. +10% damage.	附加神圣伤害：对命中的目标施放审判。伤害 +10%。
+Brilliant Wizard Oil	卓越巫师之油
+Adds Arcane damage: grants you Arcane Charges. +10% damage.	附加奥术伤害：为你提供奥术充能。伤害 +10%。
+Clearcasting	节能施法
+Each cast has a 10% chance to be ready again at once.	每次施放有 10% 几率立刻再次就绪。
+Critical Mass	临界质量
++10% critical strike chance; critical strikes deal 250% instead of 200%.	暴击几率 +10%；暴击造成 250% 而不是 200% 的伤害。
+Blood Frenzy	血之狂暴
+Below half health: +30% haste and +20% damage.	生命值低于一半时：急速 +30%，伤害 +20%。
+Heals you for 2% of all damage you deal.	按你造成的所有伤害的 2% 为你治疗。
+Lone Wolf	孤狼
++15% damage for every empty spell slot. Pairs well with unlearning spells.	每个空的法术栏位使伤害 +15%。适合搭配遗忘法术。
+Elemental Precision	元素精准
++6% damage for every different damage type among your spells.	你的法术中每有一种不同的伤害类型，伤害 +6%。
+Second Wind	复苏之风
+When a boss falls you are fully healed and gain an extra reroll, banish and unlearn.	首领倒下时，你的生命值完全恢复，并额外获得一次重抽、放逐和遗忘。
+Permafrost	永冻
+Your stuns, roots, fears and freezes last 50% longer.	你的击晕、定身、恐惧和冻结效果持续时间延长 50%。
+Arcane Power	奥术强化
++45% damage. -35% maximum health.	伤害 +45%。最大生命值 -35%。
++30% damage and +15% movement speed. You take 25% more damage.	伤害 +30%，移动速度 +15%。你受到的伤害提高 25%。
+Heroic Difficulty	英雄难度
++40% experience. Enemies have 15% more health.	经验 +40%。敌人生命值提高 15%。
+Frostfire	霜火
+Fire deals +50% to chilled and frozen enemies. Fire striking a frozen enemy shatters it: 60% of the hit to all within 5 yd.	火焰对被冰冷和被冻结的敌人伤害 +50%。火焰击中被冻结的敌人会将其击碎：对 5 码内的一切造成该次命中 60% 的伤害。
+Shadowflame	暗影烈焰
+Ignite counts as 2 damage over time for Shadow Weaving, and Shadow hits rekindle Ignite.	点燃在暗影之波中算作 2 个持续伤害效果，暗影命中会重新点燃。
+Frostbrand Weapon	冰封武器
+Chain Lightning discharges apply Winter's Chill twice. Frozen enemies discharge on every Nature hit.	闪电链迸发施加两次深冬之寒。被冻结的敌人在每次自然命中时都会迸发。
+Penance	苦修
+Judgement counts as a damage over time. Killing an afflicted enemy casts Judgement on all within 8 yd.	审判算作持续伤害效果。击杀被折磨的敌人会对 8 码内的一切施放审判。
+Wrath of Elune	艾露恩之怒
+Each Arcane Charge adds a target to Chain Lightning discharges and 10% to their damage.	每层奥术充能为闪电链迸发增加一个目标，并使其伤害提高 10%。
+Searing Light	灼热之光
+Holy deals +30% to enemies with Ignite, and every hit on an enemy under Judgement ignites it.	神圣对带有点燃的敌人伤害 +30%，每次命中被审判的敌人都会将其点燃。
+Frostmourne	霜之哀伤
+Physical hits apply Winter's Chill. Physical hits on frozen enemies cleave everything within 5 yd for 50%.	物理命中施加深冬之寒。物理命中被冻结的敌人时，对 5 码内的一切造成 50% 的顺劈伤害。
+Arcanite Reaper	奥金收割者
+Physical hits build Arcane Charges. At full charges, +20% critical strike chance.	物理命中积累奥术充能。充能满时，暴击几率 +20%。
+Doomhammer	毁灭之锤
+Chain Lightning discharges apply Sunder Armor twice. Sundered enemies count 1 extra Shock.	闪电链迸发施加两次破甲。被破甲的敌人额外算作 1 层震击。
+Scourge Invasion	天灾入侵
+Every damage over time spreads to 1 nearby enemy when its victim dies.	每个持续伤害效果在其受害者死亡时扩散到附近 1 个敌人。
+Deep Wounds	重伤
+Physical critical strikes make the target bleed for 50% of the hit over 6 sec. Sunder Armor stacks to 8.	物理暴击使目标在 6 秒内流血，造成该次命中 50% 的伤害。破甲最多叠加 8 层。
+Impale	穿刺
+Critical strikes deal 50% more damage.	暴击伤害提高 50%。
+Unbridled Wrath	怒不可遏
+Rage builds twice as fast, and Enrage also makes every hit crit.	怒气积累速度翻倍，激怒时每次命中必定暴击。
+After a critical strike: +30% haste for 3 sec.	暴击后：急速 +30%，持续 3 秒。
+Toughness	坚韧
++25% maximum health.	最大生命值 +25%。
+Anticipation	预知
++10% chance to dodge a blow. Rage builds 50% faster from blows you take.	躲闪攻击几率 +10%。受到攻击时怒气积累加快 50%。
+Enemies under Judgement take +30% physical damage instead of +15%. Their deaths heal 3 and grant 4% haste for 6 sec, stacking 5 times.	被审判的敌人受到的物理伤害 +30% 而不是 +15%。它们死亡时为你恢复 3 点生命值，并使急速提高 4%，持续 6 秒，最多叠加 5 次。
+Spiritual Focus	精神集中
+Regenerate 1.5 health per sec.	每秒恢复 1.5 点生命值。
+Redoubt	盾牌壁垒
++10% chance to dodge a blow.	躲闪攻击几率 +10%。
+Vengeance	复仇
+Holy Power stacks to 12, and each stack also grants 2% damage.	神圣能量最多叠加 12 层，每层还使伤害提高 2%。
+Conviction	定罪
++8% critical strike chance.	暴击几率 +8%。
+Frenzy	狂乱
+Endurance Training	耐久训练
+Improved Hunter's Mark	强化猎人印记
+Hunter's Mark marks 3 enemies, and marked enemies take +60% instead of +35%.	猎人印记标记 3 个敌人，被标记的敌人受到的伤害 +60% 而不是 +35%。
+Mortal Shots	致死射击
+Deflection	偏斜
+Killer Instinct	杀戮本能
+Relentless Strikes	无情打击
+Finishers cut the cooldown of your other spells by 30%.	终结技使你其他法术的冷却缩短 30%。
+Lethality	致命
+Lightning Reflexes	闪电反射
+Precision	精确
+Serrated Blades	锯齿利刃
+Camouflage	伪装
+Mental Strength	心灵之力
+Holy Specialization	神圣专精
+Holy Concentration	神圣专注
+Shadow Weaving	暗影之波
+Shadow deals +15% per damage over time on the target instead of +8%, up to 6.	目标身上每个持续伤害效果使暗影伤害 +15% 而不是 +8%，最多 6 个。
+Spirit Tap	精神分流
+Atonement heals twice as much, and Shadow Weaving stacks once more.	赎罪的治疗量翻倍，暗影之波多叠加一层。
+Lightning Mastery	闪电掌握
+Chain Lightning discharges at 2 Shock instead of 3, strike 3 enemies, and deal 50% instead of 35%.	闪电链在 2 层震击而不是 3 层时迸发，打击 3 个敌人，造成 50% 而不是 35% 的伤害。
+Elemental Overload triggers every 3rd cast instead of every 5th.	元素过载每第 3 次施放触发，而不是每第 5 次。
+Elemental Weapons	元素武器
+Restorative Totems	恢复图腾
+Ancestral Healing	先祖治疗
+Arcane Mind	奥术心智
+Arcane Charges stack to 8 instead of 4, and each grants 6% damage instead of 4%.	奥术充能最多叠加 8 层而不是 4 层，每层使伤害提高 6% 而不是 4%。
+Arcane Instability	奥术不稳定
+Ignite	点燃
+Ignite deals double damage, and a burning enemy's flames leap to 2 nearby when it dies.	点燃造成双倍伤害，燃烧的敌人死亡时火焰会跳到附近 2 个敌人身上。
+Master of Elements grants +45% instead of +20%.	元素掌握提供 +45% 而不是 +20%。
+Shatter	碎冰
+Enemies freeze at 4 Winter's Chill instead of 5, and frozen enemies take +100% damage instead of +40%.	敌人在 4 层而不是 5 层深冬之寒时冻结，被冻结的敌人受到的伤害 +100% 而不是 +40%。
+Ice Shards	冰川尖刺
+Shadow Mastery	暗影掌握
+Improved Drain Soul	强化吸取灵魂
+Soul Shards come twice as fast, and Soul Fire deals double damage.	灵魂碎片获取速度翻倍，灵魂之火造成双倍伤害。
+Demonic Embrace	恶魔之拥
+Fel Stamina	邪能耐力
+Emberstorm	琥珀风暴
+Ruin	毁灭
+Moonglow	月光
+Moonfury	月之怒
+Eclipses last twice as long and grant +70% instead of +40%.	日月蚀持续时间翻倍，提供 +70% 而不是 +40%。
+Feral Instinct	野性本能
+Sharpened Claws	锋利兽爪
+Furor	激怒
+Nature's Focus	自然集中
+Arms	武器
+Fury	狂怒
+Protection	防护
+Retribution	惩戒
+Beast Mastery	野兽控制
+Marksmanship	射击
+Survival	生存
+Assassination	刺杀
+Combat	战斗
+Subtlety	敏锐
+Discipline	戒律
+Elemental	元素
+Enhancement	增强
+Restoration	恢复
+Affliction	痛苦
+Demonology	恶魔学识
+Destruction	毁灭
+Balance	平衡
+Feral Combat	野性战斗
+Fire and ice from the sky: a Meteor crashes into the densest pack, stunning everything it lands on. Frost and Fire at once.	天降冰与火：一颗陨石砸进最密集的怪群，击晕落点上的一切。冰霜与火焰同时生效。
+Kel'Thuzad's Frost Blast: freezes everything around you solid and shatters it.	克尔苏加德的冰霜冲击：将你周围的一切冻结并击碎。
+Five Fireballs at once, each one exploding.	同时射出五颗火球，每颗都会爆炸。
+Become a whirlwind of steel: hits everything around you, over and over.	化身钢铁旋风：一遍又一遍地打击你周围的一切。
+A Shockwave rips through everything in front of you and stuns it.	震荡波撕裂你面前的一切并将其击晕。
+Holy-forged blows that strike three enemies at once, Holy and Physical both.	神圣锻造的打击，一次攻击三个敌人，神圣与物理兼具。
+Arrows that burst into flame on impact.	命中时爆燃起火的箭矢。
+A blur of blades: strikes everything near you several times a second.	刀光如幕：每秒数次打击你身边的一切。
+A plague that eats five enemies at once and feeds you their life.	一场瘟疫同时侵蚀五个敌人，并以它们的生命滋养你。
+A totem that erupts in a huge Fire Nova.	一个爆发出巨型火焰新星的图腾。
+Four orbs of lightning at once, each one crackling with Shock.	同时放出四个闪电球，每个都带着震击噼啪作响。
+Six Shadow Bolts at once.	同时射出六支暗影箭。
+Calls down an Infernal on the densest pack: stuns them, then burns the ground.	在最密集的怪群上召唤地狱火：击晕它们，然后灼烧地面。
+Stars rain on every enemy in a wide area. Arcane and Nature at once.	群星如雨落在大范围内的每个敌人身上。奥术与自然同时生效。
+BY FIRE BE PURGED! Ragnaros's wrath hurls back everything around you in flame.	被火焰净化吧！拉格纳罗斯之怒用烈焰击退你周围的一切。
+The Windseeker's storm: a thundercloud that follows the fight and lashes everything beneath it.	逐风者的风暴：一团跟随战斗的雷云，抽打下方的一切。
+Hakkar's plague: six enemies at once bleed shadow, and you drink it.	哈卡的瘟疫：六个敌人同时流出暗影之血，由你吸饮。
+Talisman of Ephemeral Power	短暂强力护符
+Every 20 sec: +40% damage for 6 sec.	每 20 秒：伤害 +40%，持续 6 秒。
+Zandalarian Hero Charm	赞达拉英雄护符
+On level up: +60% damage, fading over 10 sec.	升级时：伤害 +60%，在 10 秒内逐渐消退。
+Onyxia Tooth Pendant	奥妮克希亚之牙坠饰
++8% critical strike chance; critical strikes deal 50% more.	暴击几率 +8%；暴击伤害提高 50%。
+Drake Fang Talisman	龙牙饰物
+12% chance to dodge a blow entirely.	12% 几率完全躲闪一次攻击。
+Lifegiving Gem	生命宝石
+Falling below 30% health restores 40% of it. 90 sec cooldown.	生命值低于 30% 时恢复 40% 生命值。冷却 90 秒。
+Kiss of the Spider	蜘蛛之吻
++12% haste and +10% movement speed.	急速 +12%，移动速度 +10%。
+Gift of Arthas	阿尔萨斯的礼物
+Enemies that strike you are diseased for 20 Shadow damage per sec for 5 sec.	攻击你的敌人会染上疾病，每秒受到 20 点暗影伤害，持续 5 秒。
+Cloak of the Shrouded Mists	迷雾斗篷
++100% pickup range and +8% movement speed.	拾取范围 +100%，移动速度 +8%。
+Dal'Rend's Sacred Charge	达尔伦德的神圣之击
++10% haste. Set with Dal'Rend's Tribal Guardian: +25% physical damage and +3 Sunder Armor.	急速 +10%。与达尔伦德的部族守护者成套：物理伤害 +25%，破甲 +3。
+Dal'Rend's Tribal Guardian	达尔伦德的部族守护者
++4 armor. Set with Dal'Rend's Sacred Charge: +25% physical damage and +3 Sunder Armor.	护甲 +4。与达尔伦德的神圣之击成套：物理伤害 +25%，破甲 +3。
+Left Binding of the Windseeker	逐风者的禁锢之颅（左）
++15% Nature damage. Find the right binding and the two forge Thunderfury.	自然伤害 +15%。找到右侧禁锢，两者合铸雷霆之怒。
+Right Binding of the Windseeker	逐风者的禁锢之颅（右）
++15% Nature damage. Find the left binding and the two forge Thunderfury.	自然伤害 +15%。找到左侧禁锢，两者合铸雷霆之怒。
+Eye of Sulfuras	萨弗拉斯之眼
++15% Fire damage. With a Sulfuron Ingot it forges Sulfuras.	火焰伤害 +15%。与萨弗隆锭合铸萨弗拉斯。
+Sulfuron Ingot	萨弗隆锭
++15% Fire damage. With the Eye of Sulfuras it forges Sulfuras.	火焰伤害 +15%。与萨弗拉斯之眼合铸萨弗拉斯。
+Hand of Justice	正义之手
+12% chance for a spell to fire twice.	12% 几率使法术施放两次。
+Band of Accuria	精准之戒
++1 target for every spell that strikes several.	每个打击多个目标的法术目标 +1。
+Neltharion's Tear	奈萨里奥之泪
++20% area and +10% spell damage.	范围 +20%，法术伤害 +10%。
+Quel'Serrar	奎尔塞拉
+Every 6 sec, the next blow against you is absorbed entirely.	每 6 秒，你受到的下一次攻击被完全吸收。
+Atiesh, Greatstaff of the Guardian	埃提耶什，守护者的传说之杖
+Every spell fights one rank above its own.	每个法术都以高一级的等级作战。
+Corrupted Ashbringer	堕落的灰烬使者
++50% damage and every kill heals 1. You take 20% more damage.	伤害 +50%，每次击杀恢复 1 点生命值。你受到的伤害提高 20%。
+Heart of Hakkar	哈卡之心
++1 spell slot and +1 talent slot. Enemies have 25% more health. With a mastered Shadow spell: Corrupted Blood.	法术栏位 +1，天赋栏位 +1。敌人生命值提高 25%。拥有一个精通的暗影法术时：堕落之血。
+Eye of C'Thun	克苏恩之眼
++50% experience, +10% critical strike chance. Enemies deal 20% more damage.	经验 +50%，暴击几率 +10%。敌人造成的伤害提高 20%。
+Hourglass Sand	沙漏之沙
+Rerolls, banishes and unlearns: +2 of each.	重抽、放逐和遗忘：各 +2。
+Thunderfury, Blessed Blade of the Windseeker	雷霆之怒，逐风者的祝福之剑
+15% chance on hit: lightning arcs to 5 enemies for 60% of the hit, slowing them. +30% Nature damage. With a mastered Nature spell: Lightning Cloud.	命中时 15% 几率：闪电跳到 5 个敌人身上，造成该次命中 60% 的伤害并使其减速。自然伤害 +30%。拥有一个精通的自然法术时：闪电云。
+Sulfuras, Hand of Ragnaros	萨弗拉斯，炎魔拉格纳罗斯之手
+Every 8 sec a meteor strikes the densest pack, igniting all within 6 yd. +30% Fire damage. With a mastered Fire spell: Wrath of Ragnaros.	每 8 秒一颗陨石砸向最密集的怪群，点燃 6 码内的一切。火焰伤害 +30%。拥有一个精通的火焰法术时：拉格纳罗斯之怒。
+Diplomacy	外交
++1 reroll and +1 banish. +10% experience.	重抽 +1，放逐 +1。经验 +10%。
+Every 45 sec in battle: +30% damage for 12 sec.	战斗中每 45 秒：伤害 +30%，持续 12 秒。
++3 armor. Below 35% health: take 50% less damage for 8 sec. 60 sec cooldown.	护甲 +3。生命值低于 35% 时：受到的伤害降低 50%，持续 8 秒。冷却 60 秒。
+Shadowmeld	影遁
+10% chance to dodge a blow. +5% movement speed.	10% 几率躲闪一次攻击。移动速度 +5%。
+Cannibalize	食尸
+Kills heal 0.5. +10% Shadow damage.	击杀恢复 0.5 点生命值。暗影伤害 +10%。
+War Stomp	战争践踏
++15% maximum health. When 5 enemies close in, stun everything within 7 yd for 2 sec. 20 sec cooldown.	最大生命值 +15%。5 个敌人靠近时，击晕 7 码内的一切 2 秒。冷却 20 秒。
+Expansive Mind	开阔思维
++8% haste. Your movement spell recovers 25% faster.	急速 +8%。你的位移法术恢复速度加快 25%。
+Berserking	狂暴
+Up to +30% haste as your health falls. +0.6 health per sec.	随生命值降低，急速最多 +30%。每秒恢复 0.6 点生命值。
+Rage	怒气
+Blows taken and physical hits build rage; each point is +0.3% damage. At 100: Enrage, +25% haste and +15% damage for 8 sec.	受到攻击和物理命中会积累怒气；每点怒气使伤害 +0.3%。达到 100 时：激怒，急速 +25%，伤害 +15%，持续 8 秒。
+Holy Power	神圣能量
+Each Holy hit grants Holy Power: +3% haste for 6 sec, up to 8 stacks.	每次神圣命中获得神圣能量：急速 +3%，持续 6 秒，最多 8 层。
+The toughest enemy near you is marked and takes +35% damage. Killing it grants Rapid Fire: +40% haste for 5 sec.	你附近最强的敌人被标记，受到的伤害 +35%。击杀它获得急速射击：急速 +40%，持续 5 秒。
+Combo Points	连击点
+Each strike adds a combo point. At 5, the next finisher (or any spell, without one) deals triple damage and its stun lasts twice as long.	每次打击增加一个连击点。达到 5 点时，下一个终结技（没有终结技时则是任意法术）造成三倍伤害，其击晕持续时间翻倍。
+Atonement	赎罪
+5% of your Holy damage heals you. Shadow Weaving stacks once more.	你造成的神圣伤害的 5% 为你治疗。暗影之波多叠加一层。
+Elemental Overload	元素过载
+Every 5th cast fires twice.	每第 5 次施放会施放两次。
+Master of Elements	元素掌握
+A spell of a different element than your last deals +20% damage: weave Frost, Fire and Arcane.	与上一个法术元素不同的法术伤害 +20%：交替使用冰霜、火焰和奥术。
+Soul Shards	灵魂碎片
+Enemies dying under your damage over time yield soul shards (+5% damage over time each). At 5, Soul Fire hurls itself at the toughest foe.	在你的持续伤害下死亡的敌人会产生灵魂碎片（每个使持续伤害 +5%）。达到 5 个时，灵魂之火自动射向最强的敌人。
+Eclipse	日月蚀
+5 Nature casts bring a Lunar Eclipse (+40% Arcane), 5 Arcane casts a Solar Eclipse (+40% Nature), 10 sec each.	5 次自然施法带来月蚀（奥术 +40%），5 次奥术施法带来日蚀（自然 +40%），各持续 10 秒。
+@frostbolt	寒冰箭
+@fireball	火球术
+@arcane_missiles	奥术飞弹
+@frost_nova	冰霜新星
+@arcane_explosion	魔爆术
+@blizzard	暴风雪
+@flamestrike	烈焰风暴
+@fire_blast	火焰冲击
+@cone_of_cold	冰锥术
+@blast_wave	冲击波
+@pyroblast	炎爆术
+@cleave	顺劈斩
+@heroic_strike	英勇打击
+@whirlwind	旋风斩
+@thunder_clap	雷霆一击
+@sweeping_strikes	横扫攻击
+@demoralizing_shout	挫志怒吼
+@execute	斩杀
+@mortal_strike	致死打击
+@retaliation	反击风暴
+@sinister_strike	邪恶攻击
+@eviscerate	剔骨
+@blade_flurry	剑刃乱舞
+@rupture	割裂
+@gouge	凿击
+@kidney_shot	肾击
+@smite	惩击
+@shadow_word_pain	暗言术：痛
+@holy_fire	神圣之火
+@mind_blast	心灵震爆
+@holy_nova	神圣新星
+@psychic_scream	心灵尖啸
+@power_word_shield	真言术：盾
+@shadow_bolt	暗影箭
+@corruption	腐蚀术
+@curse_of_agony	痛苦诅咒
+@immolate	献祭
+@rain_of_fire	火焰之雨
+@hellfire	地狱烈焰
+@death_coil	死亡缠绕
+@searing_pain	灼热之痛
+@shadowburn	暗影灼烧
+@arcane_shot	奥术射击
+@multi_shot	多重射击
+@serpent_sting	毒蛇钉刺
+@volley	乱射
+@explosive_trap	爆炸陷阱
+@concussive_shot	震荡射击
+@aimed_shot	瞄准射击
+@lightning_bolt	闪电箭
+@chain_lightning	闪电链
+@earth_shock	地震术
+@flame_shock	烈焰震击
+@frost_shock	冰霜震击
+@searing_totem	灼热图腾
+@magma_totem	熔岩图腾
+@lightning_shield	闪电之盾
+@hammer_of_wrath	愤怒之锤
+@consecration	奉献
+@holy_shock	神圣震击
+@exorcism	驱邪术
+@holy_wrath	神圣愤怒
+@hammer_of_justice	制裁之锤
+@divine_shield	圣盾术
+@judgement	审判
+@wrath	愤怒
+@moonfire	月火术
+@starfire	星火术
+@hurricane	飓风
+@insect_swarm	虫群
+@entangling_roots	纠缠根须
+@thorns	荆棘术
+@rejuvenation	回春术
+@rend	撕裂
+@hamstring	断筋
+@overpower	压制
+@revenge	复仇
+@intimidating_shout	破胆怒吼
+@seal_of_righteousness	正义圣印
+@retribution_aura	惩罚光环
+@lay_on_hands	圣疗术
+@raptor_strike	猛禽一击
+@wing_clip	摔绊
+@immolation_trap	献祭陷阱
+@frost_trap	冰霜陷阱
+@backstab	背刺
+@garrote	锁喉
+@ghostly_strike	鬼魅攻击
+@blind	致盲
+@mana_burn	法力燃烧
+@renew	恢复
+@touch_of_weakness	虚弱之触
+@healing_wave	治疗波
+@purge	净化术
+@scorch	灼烧
+@ice_barrier	寒冰护体
+@drain_life	吸取生命
+@howl_of_terror	恐惧嚎叫
+@maul	槌击
+@faerie_fire	精灵之火
+@tranquility	宁静
+@bloodthirst	嗜血
+@shield_slam	盾牌猛击
+@holy_shield	神圣之盾
+@seal_of_command	命令圣印
+@bestial_wrath	狂野怒火
+@wyvern_sting	翼龙钉刺
+@ambush	伏击
+@hemorrhage	出血
+@starshards	星辰碎片
+@mind_flay	精神鞭笞
+@earthquake	地震
+@stormstrike	风暴打击
+@chain_heal	治疗链
+@arcane_blast	奥术冲击
+@frostbolt_volley	寒冰箭雨
+@siphon_life	生命虹吸
+@soul_fire	灵魂之火
+@conflagrate	燃烧
+@moonkin_form	枭兽形态
+@swipe	挥击
+@feral_charge	野性冲锋
+@swiftmend	迅捷治愈
+@meteor	陨石术
+@frost_blast	冰霜冲击
+@fireball_volley	火球齐射
+@bladestorm	剑刃风暴
+@shockwave	震荡波
+@crusader_strike	十字军打击
+@explosive_shot	爆裂射击
+@adrenaline_rush	冲动
+@devouring_plague	吞噬瘟疫
+@fire_nova_totem	火焰新星图腾
+@ball_lightning	闪电球
+@shadow_bolt_volley	暗影箭雨
+@inferno	地狱火
+@starfall	星落
+@wrath_of_ragnaros	拉格纳罗斯之怒
+@lightning_cloud	闪电云
+@corrupted_blood	堕落之血
+Young Fleshripper	幼年食腐鸟
+Coyote	郊狼
+Defias Smuggler	迪菲亚走私者
+Harvest Golem	收割傀儡
+Young Goretusk	小血牙野猪
+Defias Trapper	迪菲亚捕兽者
+Fleshripper	食腐鸟
+Goretusk	血牙野猪
+Harvest Watcher	收割看守者
+Riverpaw Brute	河爪蛮兵
+Riverpaw Bandit	河爪强盗
+Great Goretusk	巨型血牙野猪
+Riverpaw Taskmaster	河爪监工
+Defias Highwayman	迪菲亚拦路贼
+Pygmy Venom Web Spider	侏儒毒网蜘蛛
+Riverpaw Mystic	河爪秘法师
+Brainwashed Noble	被洗脑的贵族
+Marisa du'Paige	玛里莎·杜派格
+Sergeant Brashclaw	布拉什克劳中士
+Klaven Mortwake	克拉文·莫特维克
+Lupos	卢普斯
+Vultros	沃尔特斯
+Duskwood	暮色森林
+Duskwood's curse lifts.	暮色森林的诅咒解除了。
+Venom Web Spider	毒网蜘蛛
+Skeletal Warrior	骷髅战士
+Green Recluse	绿色隐士蜘蛛
+Skeletal Mage	骷髅法师
+Young Black Ravager	小黑色劫掠者
+Skeletal Horror	骷髅恐魔
+Black Widow Hatchling	幼年黑寡妇蜘蛛
+Black Ravager	黑色劫掠者
+Black Ravager Mastiff	黑色劫掠者獒犬
+Nightbane Worgen	夜行狼人
+Nightbane Shadow Weaver	夜行狼人暗影编织者
+Nightbane Dark Runner	夜行狼人暗夜奔行者
+Nightbane Vile Fang	夜行狼人邪牙
+Fetid Corpse	腐臭的尸体
+Nightbane Tainted One	被污染的夜行狼人
+Naraxis	纳拉克西斯
+Fenros	芬罗斯
+Nefaru	奈法鲁
+Redridge Mountains	赤脊山
+Redridge is safe once more.	赤脊山再次安全了。
+Redridge Thrasher	赤脊山豺狼人
+Redridge Mongrel	赤脊山杂种狗
+Tarantula	狼蛛
+Redridge Poacher	赤脊山偷猎者
+Murloc Shorestriker	鱼人海岸突袭者
+Black Dragon Whelp	黑色雏龙
+Redridge Brute	赤脊山蛮兵
+Redridge Mystic	赤脊山秘法师
+Dire Condor	恐怖秃鹫
+Redridge Basher	赤脊山猛击者
+Greater Tarantula	巨型狼蛛
+Redridge Drudger	赤脊山苦工
+Blackrock Summoner	黑石召唤师
+Blackrock Tracker	黑石追踪者
+Blackrock Champion	黑石勇士
+Blackrock Hunter	黑石猎手
+Singe	辛吉
+Tharil'zun	萨里尔祖恩
+Blackrock Gladiator	黑石角斗士
+Rohh the Silent	沉默者洛恩
+Kazon	卡松
+Mount Hyjal	海加尔山
+Nordrassil endures.	诺达希尔屹立不倒。
+Cannibal Ghoul	食人食尸鬼
+Jadefire Rogue	碧火盗贼
+Putrid Gargoyle	腐烂的石像鬼
+Death Cultist	死亡信徒
+Torn Screamer	破碎尖啸者
+Necromancer	亡灵巫师
+Jadefire Felsworn	碧火魔誓者
+Nerubian Overseer	蛛魔监工
+Hate Shrieker	仇恨尖啸者
+Hederine Manastalker	赫德琳法力追猎者
+Stitched Horror	缝合恐魔
+Prince Xavalis	萨瓦里斯王子
+Lady Hederine	赫德琳女士
+Taerar	泰拉尔
+Lethon	莱索恩
+Emeriss	艾莫莉丝
+Ysondre	伊森德雷
+Naxxramas	纳克萨玛斯
+Eastern Plaguelands	东瘟疫之地
+Kel'Thuzad's necropolis falls dark.	克尔苏加德的浮空城陷入黑暗。
+Scourge Soldier	天灾士兵
+Plagued Swine	染疫的猪
+Cursed Mage	被诅咒的法师
+Scourge Warder	天灾守卫
+Frenzied Plaguehound	狂乱的瘟疫猎犬
+Carrion Devourer	食腐吞噬者
+Crypt Walker	地穴行者
+Putrid Shrieker	腐烂尖啸者
+Ziggurat Protector	通灵塔保护者
+Deathknight	死亡骑士
+Slaughterhouse Protector	屠宰场保护者
+Death Lord	死亡领主
+Anub'Rekhan	阿努布雷坎
+Grand Widow Faerlina	黑女巫法琳娜
+Patchwerk	帕奇维克
+Gluth	格拉斯
+Thaddius	塔迪乌斯
+Kel'Thuzad	克尔苏加德
+Level {}-{}  {}	等级 {}-{}  {}
+Level {}  {}	等级 {}  {}

@@ -32,6 +32,33 @@ const BR_RATIO = 5.0;
 const READY_TIMEOUT_MS = 20000;
 const PREFETCH_CONCURRENCY = 8;
 
+// The loading screen in the game's language: `?survivors_lang=zh`, else the choice the game's
+// language button saved (`survivors/i18n.rs`, the same localStorage key), else the browser's.
+const ZH = (() => {
+  try {
+    const q = new URLSearchParams(location.search).get('survivors_lang');
+    const saved = localStorage.getItem('benilla:/benilla-config/survivors-lang.txt');
+    return (q || saved || navigator.language || '').trim().toLowerCase().startsWith('zh');
+  } catch {
+    return false;
+  }
+})();
+const ZH_TEXT = {
+  'Starting\u2026': '启动中\u2026',
+  'Raising the world\u2026': '正在构建世界\u2026',
+  'Loading\u2026': '加载中\u2026',
+  'Summoning the horde\u2026': '正在召唤怪群\u2026',
+  'a fan-made roguelike by Aethus': 'Aethus 制作的同人肉鸽游戏',
+  'The client failed to start: ': '客户端启动失败：',
+  'Your spells cast themselves. Your only job is to not die.': '你的法术会自动施放。你唯一的任务就是活下去。',
+  'Gems pull toward you once you are close. Greed gets heroes killed.': '靠近宝石就会被吸过来。贪心会害死英雄。',
+  'A boss arrives every couple of minutes. You will hear about it.': '每隔几分钟就会来一个首领，到时会有提示。',
+  'From level 5, F casts your class\u2019s escape. Blink, Charge, Sprint\u2026': '5 级起，按 F 施放职业位移技能：闪现术、冲锋、疾跑\u2026',
+  'Rare and Epic cards are worth more than they look. Legendary always is.': '精良和史诗卡比看起来更值钱，传说卡永远值得拿。',
+  'Press C to unlock the camera and swing it around with the mouse.': '按 C 解锁镜头，用鼠标拖动旋转视角。',
+};
+const L = (s) => (ZH && ZH_TEXT[s]) || s;
+
 export async function boot(init, opts = {}) {
   const q = new URLSearchParams(location.search);
   const ui = createBootUi();
@@ -57,13 +84,13 @@ export async function boot(init, opts = {}) {
     const [module] = await Promise.all([wasm, prefetch]);
     w = await init({ module_or_path: module });
   } catch (e) {
-    ui.fail('The client failed to start: ' + (e && e.message ? e.message : e));
+    ui.fail(L('The client failed to start: ') + (e && e.message ? e.message : e));
     throw e;
   }
   // init() resolved = module instantiated and the plugin graph built; the heavy catalog frame
   // is still ahead. From here the client drives the stages; the timeout is the drift backstop
   // (an old bundle without webprogress under a new page must not strand the overlay).
-  ui.setStage('Starting…');
+  ui.setStage(L('Starting…'));
   ui.armTimeout(opts.readyTimeoutMs ?? READY_TIMEOUT_MS);
   return w;
 }
@@ -152,7 +179,7 @@ async function prefetchManifest(manifestUrl, onProgress) {
 /// they click Enter World just loads the old way.
 function installProgressHook(ui, skipPrefetch) {
   window.__wenilla_progress = (stage) => {
-    if (stage === 'startup') ui.setStage('Raising the world…');
+    if (stage === 'startup') ui.setStage(L('Raising the world…'));
     else if (stage === 'ready') {
       ui.hide();
       if (!skipPrefetch) {
@@ -243,8 +270,8 @@ function createBootUi() {
     <div class="embers"></div>
     <div class="box">
       <div class="title">Azeroth Survivors</div>
-      <div class="by">a fan-made roguelike by Aethus</div>
-      <div class="stage">Loading…</div>
+      <div class="by">${L('a fan-made roguelike by Aethus')}</div>
+      <div class="stage">${L('Loading…')}</div>
       <div class="bar"><i></i></div>
       <div class="data"></div>
       <div class="tip"></div>
@@ -265,7 +292,7 @@ function createBootUi() {
     'From level 5, F casts your class\u2019s escape. Blink, Charge, Sprint\u2026',
     'Rare and Epic cards are worth more than they look. Legendary always is.',
     'Press C to unlock the camera and swing it around with the mouse.',
-  ];
+  ].map(L);
   const tipEl = root.querySelector('.tip');
   let tipN = Math.floor(Math.random() * tips.length);
   tipEl.textContent = tips[tipN];
@@ -292,17 +319,22 @@ function createBootUi() {
         const pct = Math.min(99, Math.floor((got / total) * 100));
         const done = got >= total;
         stageEl.textContent = done
-          ? 'Summoning the horde…'
-          : `Downloading the client — ${pct}%`;
+          ? L('Summoning the horde…')
+          : ZH
+            ? `正在下载客户端 — ${pct}%`
+            : `Downloading the client — ${pct}%`;
         fillEl.style.width = (done ? 100 : pct) + '%';
       } else {
-        stageEl.textContent = `Downloading client — ${mb(got)} MB`;
+        stageEl.textContent = ZH
+          ? `正在下载客户端 — ${mb(got)} MB`
+          : `Downloading client — ${mb(got)} MB`;
         barEl.classList.add('pulse');
       }
     },
     setData(done, total) {
       if (gone) return;
-      dataEl.textContent = total > 0 && done < total ? `warming game data ${done} / ${total}` : '';
+      const warming = ZH ? '预热游戏数据' : 'warming game data';
+      dataEl.textContent = total > 0 && done < total ? `${warming} ${done} / ${total}` : '';
     },
     setStage(text) {
       if (gone) return;

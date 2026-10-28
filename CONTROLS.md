@@ -6,6 +6,7 @@
 |---|---|---|
 | Menu | Click a race, gender, class and zone | make your pick (**Randomize** rolls one) |
 | Menu | **Enter** (or **Enter World**) | start the run; the world travels to the zone picked |
+| Menu | **中文 / English** (under the class panel) | switch the language between Simplified Chinese and English; the choice is kept. A Chinese browser starts in Chinese, and `?survivors_lang=zh` or `=en` forces one |
 | Playing | **W / S / A / D** or **arrow keys** | move the hero (locked camera: the hero faces the cursor, backpedals and strafes) |
 | Playing | **Space** | jump |
 | Playing | **Q** (once specialized) | your spec's **burst**: Recklessness, Combustion, Cold Snap… works the spec's own engine (rage, Ignite, freezes, combo points, shards…) |

@@ -13,6 +13,7 @@ use bevy::window::PrimaryWindow;
 
 use super::data::{self, AbilityDef, Effect, Kind, PassiveDef, Stat};
 use super::hero::{self, Hero};
+use super::i18n::{self, tf, w};
 use super::minimap::{self, MiniMap};
 use super::synergy::{self, ComboDef, Need, RelicDef, Req, RuneDef, TalentDef, Tier, TreeDef};
 use super::{Owned, Phase, Rng, Run, Selection, Stats};
@@ -342,6 +343,9 @@ fn icon(spell: u32, size: f32) -> impl Bundle {
 }
 
 fn spell_name(spells: Option<&crate::ui_action::Spells>, spell: u32, fallback: &str) -> String {
+    if let Some(zh) = super::i18n::spell(fallback) {
+        return zh.to_string();
+    }
     spells
         .and_then(|s| s.catalog.get(spell))
         .map(|d| d.name.clone())
@@ -1559,7 +1563,8 @@ pub(super) fn describe_card(
                 name: spell_name(spells, def.spell, def.key),
                 tag: "New spell".into(),
                 tag_color: new,
-                desc: format!("{}.", ability_body(def, &c)),
+                // The body ends its own sentence.
+                desc: ability_body(def, &c),
                 ranks: Some((0, data::MAX_ABILITY_LEVEL)),
             }
         }
@@ -1688,7 +1693,7 @@ pub(super) fn describe_card(
                 name: spell_name(spells, def.spell, def.key),
                 tag: format!("{} deep talent: new spell", t.name),
                 tag_color: super::cards::LEGENDARY,
-                desc: format!("{}. Takes no spell slot.", ability_body(def, &c)),
+                desc: tf("{} Takes no spell slot.", &[&ability_body(def, &c)]),
                 ranks: Some((0, data::MAX_ABILITY_LEVEL)),
             }
         }
@@ -2406,17 +2411,13 @@ fn cast_at(def: &'static AbilityDef, level: u8, stats: &Stats) -> Cast {
 fn effect_text(effect: Effect) -> Option<String> {
     Some(match effect {
         Effect::None => return None,
-        Effect::Slow(m, t) => format!("slowing them by {} for {} sec", pct(1.0 - m), num(t)),
-        Effect::Root(t) => format!("freezing them in place for {} sec", num(t)),
-        Effect::Stun(t) => format!("stunning them for {} sec", num(t)),
-        Effect::Fear(t) => format!("sending them fleeing for {} sec", num(t)),
-        Effect::Weaken(m, t) => format!(
-            "cutting their damage by {} for {} sec",
-            pct(1.0 - m),
-            num(t)
-        ),
-        Effect::Drain(f) => format!("healing you for {} of the damage", pct(f)),
-        Effect::Execute(f) => format!("killing them outright below {} health", pct(f)),
+        Effect::Slow(m, t) => tf("slowing them by {} for {} sec", &[&pct(1.0 - m), &num(t)]),
+        Effect::Root(t) => tf("freezing them in place for {} sec", &[&num(t)]),
+        Effect::Stun(t) => tf("stunning them for {} sec", &[&num(t)]),
+        Effect::Fear(t) => tf("sending them fleeing for {} sec", &[&num(t)]),
+        Effect::Weaken(m, t) => tf("cutting their damage by {} for {} sec", &[&pct(1.0 - m), &num(t)]),
+        Effect::Drain(f) => tf("healing you for {} of the damage", &[&pct(f)]),
+        Effect::Execute(f) => tf("killing them outright below {} health", &[&pct(f)]),
     })
 }
 
@@ -2429,91 +2430,85 @@ fn ability_body(def: &AbilityDef, c: &Cast) -> String {
             let toughest = matches!(def.key, "pyroblast" | "aimed_shot" | "exorcism" | "starfire");
             let melee = def.kind == Kind::Melee;
             let who = match (toughest, melee, c.count) {
-                (true, _, 1) => "the toughest enemy in range".to_string(),
-                (true, _, n) => format!("the {n} toughest enemies in range"),
-                (false, true, 1) => "the closest enemy".into(),
-                (false, true, n) => format!("the {n} closest enemies"),
-                (false, false, 1) => "the nearest enemy".into(),
-                (false, false, n) => format!("the {n} nearest enemies"),
+                (true, _, 1) => w("the toughest enemy in range"),
+                (true, _, n) => tf("the {} toughest enemies in range", &[&n]),
+                (false, true, 1) => w("the closest enemy"),
+                (false, true, n) => tf("the {} closest enemies", &[&n]),
+                (false, false, 1) => w("the nearest enemy"),
+                (false, false, n) => tf("the {} nearest enemies", &[&n]),
             };
-            let mut s = format!("{} {who} for {d} damage", if melee { "Strikes" } else { "Hits" });
+            let verb = if melee { "Strikes" } else { "Hits" };
+            let mut s = tf("{} {} for {} damage", &[&verb, &who, &d]);
             if c.radius > 0.0 && !melee {
-                s += &format!(", and everything within {} yd of the hit", num(c.radius));
+                s += &tf(", and everything within {} yd of the hit", &[&num(c.radius)]);
             }
             s
         }
-        Kind::Nova => format!("Deals {d} damage to every enemy within {} yd of you", num(c.radius)),
-        Kind::Cone => format!("Deals {d} damage to every enemy in a {} yd cone toward the closest", num(c.radius)),
+        Kind::Nova => tf("Deals {} damage to every enemy within {} yd of you", &[&d, &num(c.radius)]),
+        Kind::Cone => tf(
+            "Deals {} damage to every enemy in a {} yd cone toward the closest",
+            &[&d, &num(c.radius)],
+        ),
         Kind::Ground | Kind::GroundSelf => {
             let at = if def.kind == Kind::GroundSelf { "around you" } else { "on the thickest pack" };
             if burst {
-                format!("Strikes a {} yd area {at} for {d} damage", num(c.radius))
+                tf("Strikes a {} yd area {} for {} damage", &[&num(c.radius), &at, &d])
             } else {
-                format!(
-                    "Covers a {} yd area {at} for {} sec, dealing {d} damage every second",
-                    num(c.radius),
-                    num(c.duration)
+                tf(
+                    "Covers a {} yd area {} for {} sec, dealing {} damage every second",
+                    &[&num(c.radius), &at, &num(c.duration), &d],
                 )
             }
         }
-        Kind::Chain => format!(
-            "Strikes the nearest enemy for {d} damage, then jumps to {} more within {} yd of each other, 15% weaker with every jump",
-            c.count,
-            num(c.radius)
+        Kind::Chain => tf(
+            "Strikes the nearest enemy for {} damage, then jumps to {} more within {} yd of each other, 15% weaker with every jump",
+            &[&d, &c.count, &num(c.radius)],
         ),
-        Kind::Dot => format!(
+        Kind::Dot => tf(
             "Afflicts {} enemies in range with {} damage every second for {} sec",
-            c.count,
-            num(c.dot),
-            num(c.duration)
+            &[&c.count, &num(c.dot), &num(c.duration)],
         ),
-        Kind::Aura => format!(
-            "Every {} sec, deals {d} damage to every enemy within {} yd of you",
-            num(c.cooldown),
-            num(c.radius)
+        Kind::Aura => tf(
+            "Every {} sec, deals {} damage to every enemy within {} yd of you",
+            &[&num(c.cooldown), &d, &num(c.radius)],
         ),
-        Kind::Orbit => format!(
-            "Every {} sec, zaps {} within {} yd of you for {d} damage",
-            num(c.cooldown),
-            if c.count == 1 { "an enemy".to_string() } else { format!("{} enemies", c.count) },
-            num(c.radius)
-        ),
-        Kind::Shield => format!("Absorbs the next {d} damage you take within {} sec", num(c.duration)),
-        Kind::Immune => format!(
+        Kind::Orbit => {
+            let who = if c.count == 1 { w("an enemy") } else { tf("{} enemies", &[&c.count]) };
+            tf(
+                "Every {} sec, zaps {} within {} yd of you for {} damage",
+                &[&num(c.cooldown), &who, &num(c.radius), &d],
+            )
+        }
+        Kind::Shield => tf("Absorbs the next {} damage you take within {} sec", &[&d, &num(c.duration)]),
+        Kind::Immune => tf(
             "When an enemy closes in, makes you immune to all damage for {} sec",
-            num(c.duration)
+            &[&num(c.duration)],
         ),
-        Kind::Thorns => format!(
-            "When enemies close in, deals {d} damage to every attacker for {} sec",
-            num(c.duration)
+        Kind::Thorns => tf(
+            "When enemies close in, deals {} damage to every attacker for {} sec",
+            &[&d, &num(c.duration)],
         ),
-        Kind::Heal => format!("Below 85% health, heals you for {d} over {} sec", num(c.duration)),
-        Kind::Totem if def.key == "magma_totem" => format!(
-            "Drops a totem for {} sec that burns every enemy within {} yd for {d} damage every 2 sec",
-            num(c.duration),
-            num(c.radius)
+        Kind::Heal => tf("Below 85% health, heals you for {} over {} sec", &[&d, &num(c.duration)]),
+        Kind::Totem if def.key == "magma_totem" => tf(
+            "Drops a totem for {} sec that burns every enemy within {} yd for {} damage every 2 sec",
+            &[&num(c.duration), &num(c.radius), &d],
         ),
-        Kind::Totem => format!(
-            "Drops a totem for {} sec that hits the nearest enemy within {} yd for {d} damage every second",
-            num(c.duration),
-            num(def.range)
+        Kind::Totem => tf(
+            "Drops a totem for {} sec that hits the nearest enemy within {} yd for {} damage every second",
+            &[&num(c.duration), &num(def.range), &d],
         ),
     };
     // Areas that tick carry no over-time part; a burst leaves a 5 second one.
     let ground = matches!(def.kind, Kind::Ground | Kind::GroundSelf);
     if c.dot > 0.0 && def.kind != Kind::Dot && (!ground || burst) {
         let secs = if ground { 5.0 } else { c.duration };
-        s += &format!(
-            ", then {} damage every second for {} sec",
-            num(c.dot),
-            num(secs)
-        );
+        s += &tf(", then {} damage every second for {} sec", &[&num(c.dot), &num(secs)]);
     }
     if let Some(e) = effect_text(def.effect) {
-        s += ", ";
+        s += i18n::comma();
         s += &e;
     }
-    s.push('.');
+    s.push(i18n::stop());
     s
 }
 
@@ -2526,10 +2521,10 @@ fn next_rank(def: &AbilityDef, now: &Cast, next: &Cast) -> String {
     };
     let mut gains = Vec::new();
     if next.dmg > 0.0 && def.kind != Kind::Dot && def.kind != Kind::Immune {
-        gains.push(format!("{} {what}", num(next.dmg)));
+        gains.push(format!("{} {}", num(next.dmg), w(what)));
     }
     if next.dot > 0.0 {
-        gains.push(format!("{} damage per second", num(next.dot)));
+        gains.push(tf("{} damage per second", &[&num(next.dot)]));
     }
     if next.count != now.count
         && matches!(
@@ -2538,18 +2533,18 @@ fn next_rank(def: &AbilityDef, now: &Cast, next: &Cast) -> String {
         )
     {
         gains.push(match def.kind {
-            Kind::Chain => format!("{} jumps", next.count),
-            _ => format!("{} targets", next.count),
+            Kind::Chain => tf("{} jumps", &[&next.count]),
+            _ => tf("{} targets", &[&next.count]),
         });
     }
     if next.radius > 0.0 {
-        gains.push(format!("{} yd", num(next.radius)));
+        gains.push(tf("{} yd", &[&num(next.radius)]));
     }
     if next.duration > 0.0 {
-        gains.push(format!("{} sec", num(next.duration)));
+        gains.push(tf("{} sec", &[&num(next.duration)]));
     }
-    gains.push(format!("{} sec cooldown", num(next.cooldown)));
-    gains.join(", ")
+    gains.push(tf("{} sec cooldown", &[&num(next.cooldown)]));
+    gains.join(i18n::comma())
 }
 
 fn ability_tip(

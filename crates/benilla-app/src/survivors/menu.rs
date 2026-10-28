@@ -44,6 +44,8 @@ pub(super) enum MenuAction {
     Class(usize),
     Map(usize),
     Randomize,
+    /// 中文 / English.
+    Language,
     Enter,
 }
 
@@ -417,6 +419,28 @@ fn tower(ui: &mut ChildSpawnerCommands, art: &GlueArt, f: &Handle<Font>) {
                     1.0,
                 );
             });
+
+        // Under the tower, clear of its frame.
+        tower
+            .spawn(Node {
+                position_type: PositionType::Absolute,
+                left: px(30.0),
+                top: px(TOWER_H + 16.0),
+                ..default()
+            })
+            .with_children(|r| {
+                glue_button(
+                    r,
+                    art,
+                    f,
+                    MenuAction::Language,
+                    "中文 / English",
+                    146.0,
+                    30.0,
+                    GlueBtnKind::Small,
+                    1.0,
+                );
+            });
     });
 }
 
@@ -552,6 +576,7 @@ pub(super) fn menu_clicks(
     mut run: ResMut<Run>,
     mut rng: ResMut<Rng>,
     mut next: ResMut<NextState<Phase>>,
+    mut lang: MessageWriter<super::i18n::ToggleLang>,
 ) {
     if *phase.get() != Phase::Menu {
         return;
@@ -583,6 +608,9 @@ pub(super) fn menu_clicks(
             if start_run(&mut run, &mut selection) {
                 next.set(Phase::Playing);
             }
+        }
+        MenuAction::Language => {
+            lang.write(super::i18n::ToggleLang);
         }
         MenuAction::Randomize => {
             let picks: Vec<(usize, usize)> = all
@@ -670,7 +698,7 @@ pub(super) fn refresh_menu_ui(
             MenuAction::Sex(s) => cur.is_some_and(|c| c.1 == s),
             MenuAction::Class(i) => selection.class == Some(i),
             MenuAction::Map(i) => selection.map == i,
-            MenuAction::Randomize | MenuAction::Enter => false,
+            MenuAction::Randomize | MenuAction::Language | MenuAction::Enter => false,
         };
         if let Some(mut lock) = lock {
             if lock.0 != selected {
